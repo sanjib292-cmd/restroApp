@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "104838460930",
+    "project_id": "mealtime-7fd6c",
+    "storage_bucket": "mealtime-7fd6c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:104838460930:android:60535fdf6d628dd089991b",
+        "android_client_info": {
+          "package_name": "com.example.restro_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "104838460930-l3em4vv6q1ggqg2o8tuolfhp2b6u821a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbAmZzmjvlykLO71OPEbyx_j5Gi-ibzIo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "104838460930-l3em4vv6q1ggqg2o8tuolfhp2b6u821a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
