@@ -18,7 +18,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
-
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -29,7 +28,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   // ignore: unused_field
   var userDetails;
-  getUserdetails() async {print('this1');
+  getUserdetails() async {
+    print('this1');
     final SharedPreferences sharedPreferences =
         await SharedPreferences.getInstance();
     var userdetails = sharedPreferences.getString('Account Details');
@@ -49,22 +49,23 @@ class _HomePageState extends State<HomePage> {
           context: context,
           builder: (con) {
             return CustomDialogBox(
-                title: "Token expired",
-                descriptions:
-                    """Please login to acess your account and manage orders...""",
-                text: "Login",
-                img: '${Jwt.parseJwt(userDetails)['imgurl']}',
-                function: () {
-                  //print('pushing');
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-                    return ChangeNotifierProvider(
-                        create: (BuildContext context) {
-                          return LoginRestro();
-                        },
-                        child: LoginScreen());
-                  }));
-                });
+              title: "Token expired",
+              descriptions:
+                  """Please login to acess your account and manage orders...""",
+             // text: "Login",
+              img: '${Jwt.parseJwt(userDetails)['imgurl']}',
+            );
           });
+      Future.delayed(Duration(seconds: 1), () {
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) {
+          return ChangeNotifierProvider(
+              create: (BuildContext context) {
+                return LoginRestro();
+              },
+              child: LoginScreen());
+        }));
+      });
     }
   }
 
@@ -72,8 +73,10 @@ class _HomePageState extends State<HomePage> {
     print('this3');
     final SharedPreferences sharedPreferences =
         await SharedPreferences.getInstance();
-    print(JwtDecoder.getExpirationDate(sharedPreferences.getString('Account Details').toString()));
-    if (JwtDecoder.isExpired(sharedPreferences.getString('Account Details').toString())) {
+    print(JwtDecoder.getExpirationDate(
+        sharedPreferences.getString('Account Details').toString()));
+    if (JwtDecoder.isExpired(
+        sharedPreferences.getString('Account Details').toString())) {
       //final pref = await SharedPreferences.getInstance();
       await sharedPreferences.clear();
       showDialog(
@@ -83,18 +86,7 @@ class _HomePageState extends State<HomePage> {
               title: "Session timeout",
               descriptions:
                   """Please login to acess your account and manage orders...""",
-              text: "Login",
-              function: () {
-                print('pushing');
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-                  return ChangeNotifierProvider(
-                      create: (BuildContext context) {
-                        return LoginRestro();
-                      },
-                      child: LoginScreen());
-                }));
-              },
-              img: '${Jwt.parseJwt(userDetails)['imgurl']}',
+             // text: "Login",
             );
             // AlertDialog(
             //     title: Text('Token Expired Please Log in..'),
@@ -105,7 +97,17 @@ class _HomePageState extends State<HomePage> {
             //       },
             //     ));
           });
-      
+      Future.delayed(Duration(seconds: 1), () {
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) {
+          return ChangeNotifierProvider(
+              create: (BuildContext context) {
+                return LoginRestro();
+              },
+              child: LoginScreen());
+        }));
+      });
+
       //valueNotifier.value = _pcm; //provider
       //setState
 
@@ -130,14 +132,19 @@ class _HomePageState extends State<HomePage> {
     Map<String, dynamic> payload = Jwt.parseJwt(userDetails);
 
     final List<Widget> _children = [
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (BuildContext context) { return LoginRestro(); }),
-        ChangeNotifierProvider(create: (BuildContext context) { return OrderBackend(); })
-      ],
-   //child: ChangeNotifierProvider(create: (BuildContext context) { return LoginRestro(); },
-      child: ActiveOrders(userDetails: userDetails,)),
-    
+      MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (BuildContext context) {
+              return LoginRestro();
+            }),
+            ChangeNotifierProvider(create: (BuildContext context) {
+              return OrderBackend();
+            })
+          ],
+          //child: ChangeNotifierProvider(create: (BuildContext context) { return LoginRestro(); },
+          child: ActiveOrders(
+            userDetails: userDetails,
+          )),
       AddorEditMenu(
         token: userDetails,
         payload: payload,
@@ -148,12 +155,11 @@ class _HomePageState extends State<HomePage> {
           },
           child: RestroMenu(payLoad: payload, token: userDetails)),
       Pastorders(),
-        ChangeNotifierProvider(
+      ChangeNotifierProvider(
           create: (BuildContext context) {
             return LoginRestro();
           },
-          child: RestroAccount(user: userDetails)),
-      
+          child: ProfileApp(userDetails: userDetails,)),
     ];
     return Scaffold(
         appBar: PreferredSize(
@@ -194,9 +200,7 @@ class _HomePageState extends State<HomePage> {
                                       inactiveThumbColor: Colors.white60,
                                       inactiveTrackColor: Colors.red,
                                       onChanged: (value) {
-                                        setState(() {
-                                          
-                                        });
+                                        setState(() {});
                                       },
                                       value: snapshot.data['isOpen']);
                                 }
@@ -231,7 +235,6 @@ class _HomePageState extends State<HomePage> {
             bottomappbarItms(FontAwesomeIcons.calendarAlt, 'Add New Item'),
             bottomappbarItms(FontAwesomeIcons.edit, 'Edit Item'),
             bottomappbarItms(FontAwesomeIcons.pizzaSlice, 'Past Orders'),
-            
             bottomappbarItms(FontAwesomeIcons.user, 'Account'),
           ],
         ),

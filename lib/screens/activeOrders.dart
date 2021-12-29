@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:restro_app/backendApi/loginRestro.dart';
 import 'package:restro_app/backendApi/orderBackend.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shimmer/shimmer.dart';
 
 class ActiveOrders extends StatefulWidget {
   var userDetails;
@@ -45,8 +46,36 @@ class _ActiveOrdersState extends State<ActiveOrders>
             stream: getRandomNumberFact(payload['id']),
             //initialData: {'null':'null'},
             builder: (con, AsyncSnapshot snp) {
-              if (snp.data == null) {
-                return CircularProgressIndicator();
+              if (snp.connectionState==ConnectionState.waiting) {
+                return ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: 3,
+                  itemBuilder: (BuildContext context, int index) {  
+return Shimmer.fromColors(
+                    baseColor: Colors.grey[400]!,
+                    highlightColor: Colors.grey[300]!,
+                    child: Card(
+                      elevation: 15,
+                      child: ClipPath(
+                        child: Container(
+                          height: MediaQuery.of(context).size.height / 6,
+                          decoration: BoxDecoration(
+                              border: Border(
+                                  right:
+                                      BorderSide(color: Colors.grey, width: 4))),
+                        ),
+                        clipper: ShapeBorderClipper(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(3))),
+                      ),
+                    ),
+                  );
+                  },
+                  
+                );
+              }
+              else if(snp.connectionState==ConnectionState.none){
+                return Center(child: Text('No active orders',style: GoogleFonts.poppins(),),);
               }
 
               return Expanded(

@@ -69,13 +69,13 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
                 alignment: Alignment.bottomRight,
                 child: Container(
                   color: Colors.green,
-                  child: FlatButton(
+                  child:widget.text?FlatButton(
                       onPressed:widget.function,
                       child: Text(
                         widget.text,
                         style: GoogleFonts.poppins(
                             fontSize: 18, color: Colors.white),
-                      )),
+                      )):Container(),
                 ),
               ):
               Container()
