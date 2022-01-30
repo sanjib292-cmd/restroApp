@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 import 'package:restro_app/backendApi/loginRestro.dart';
+import 'package:restro_app/screens/forgotpassword.dart';
 import 'package:restro_app/screens/homepage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -126,58 +127,68 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(
                 height: 5,
               ),
-              TextButton(
-                onPressed: () async {
+              Column(
+                children: [
+                  TextButton(
+                    onPressed: () async {
   
     String? token = await _firebaseMessaging.getToken();
 
  
-                  await restroLogin.loginRestro(phone, password,token);
-                  if (restroLogin.msg != null) {
-                    final SharedPreferences sharedPreferences =
-                        await SharedPreferences.getInstance();
-                    sharedPreferences.setBool(
-                        'isUser', restroLogin.varifiedUser);
-                    await sharedPreferences.setString(
-                        'Account Details', restroLogin.userDetails);
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (con) {
-                        return ChangeNotifierProvider(
-                          create: (BuildContext context) {
-                            return LoginRestro();
-                          },
-                          child: HomePage(),
-                        );
-                      }));
-                   
-                  } else {
-                    return showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: Text('${restroLogin.errorMsg}'),
-                          );
-                        });
-                  }
-                },
-                child: Container(
-                  height: 50,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      gradient: LinearGradient(
-                          // ignore: prefer_const_literals_to_create_immutables
-                          colors: [
-                            Color.fromRGBO(143, 148, 251, 1),
-                            Color.fromRGBO(143, 148, 251, .6),
-                          ])),
-                  child: Center(
-                    child: Text(
-                      "Login",
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
+                      await restroLogin.loginRestro(phone, password,token);
+                      if (restroLogin.msg != null) {
+                        final SharedPreferences sharedPreferences =
+                            await SharedPreferences.getInstance();
+                        sharedPreferences.setBool(
+                            'isUser', restroLogin.varifiedUser);
+                        await sharedPreferences.setString(
+                            'Account Details', restroLogin.userDetails);
+                          Navigator.pushReplacement(context,
+                              MaterialPageRoute(builder: (con) {
+                            return ChangeNotifierProvider(
+                              create: (BuildContext context) {
+                                return LoginRestro();
+                              },
+                              child: HomePage(),
+                            );
+                          }));
+                       
+                      } else {
+                        return showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: Text('${restroLogin.errorMsg}'),
+                              );
+                            });
+                      }
+                    },
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          gradient: LinearGradient(
+                              // ignore: prefer_const_literals_to_create_immutables
+                              colors: [
+                                Color.fromRGBO(143, 148, 251, 1),
+                                Color.fromRGBO(143, 148, 251, .6),
+                              ])),
+                      child: Center(
+                        child: Text(
+                          "Login",
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                  TextButton(onPressed: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context){
+                      return ChangeNotifierProvider(create: (BuildContext context) { return LoginRestro(); },
+                      child: Forgotpass());
+                    }));
+                  }, child: Text('Forgot password?'))
+                ],
               ),
             ],
           )

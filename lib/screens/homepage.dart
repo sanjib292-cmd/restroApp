@@ -145,9 +145,12 @@ class _HomePageState extends State<HomePage> {
           child: ActiveOrders(
             userDetails: userDetails,
           )),
-      AddorEditMenu(
-        token: userDetails,
-        payload: payload,
+      ChangeNotifierProvider(
+        create: (BuildContext context) { return LoginRestro(); },
+        child: AddorEditMenu(
+          token: userDetails,
+          //payload: payload,
+        ),
       ),
       ChangeNotifierProvider(
           create: (BuildContext context) {
@@ -174,15 +177,11 @@ class _HomePageState extends State<HomePage> {
                     // ignore: prefer_const_literals_to_create_immutables
                     children: [
                       Text(
-                        "Restaurent is",
+                        "Accept Order",
                         style: GoogleFonts.poppins(color: Colors.black),
                       ),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      const SizedBox(
-                        width: 5,
-                      ),
+                    
+                 
                       Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Transform.scale(

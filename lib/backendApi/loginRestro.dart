@@ -9,6 +9,9 @@ class LoginRestro extends ChangeNotifier {
   var msg;
   var errorMsg;
   var userDetails;
+  var forgotfail,forgotsucess;
+  bool otpVarified=false;
+  bool passwordupdated=false;
   bool varifiedUser = false;
   var restrDetails;
   String firsturl = 'http://192.168.0.103:5000';
@@ -38,6 +41,7 @@ class LoginRestro extends ChangeNotifier {
         EasyLoading.dismiss();
         return res.body;
       }
+      EasyLoading.dismiss();
       errorMsg = res.body;
       varifiedUser = false;
       notifyListeners();
@@ -48,6 +52,7 @@ class LoginRestro extends ChangeNotifier {
   }
 
   Future<Object> getRestroDetails(id) async {
+    print('rund');
     var url = Uri.parse("$firsturl/registerRestro/$id");
     var res = await http.get(
       url,
@@ -65,5 +70,87 @@ class LoginRestro extends ChangeNotifier {
     }
     print('res.body e');
     return '404';
+  }
+
+
+    Future forGotpassword(phone) async {
+    try {
+      EasyLoading.show(status: 'loading...');
+      var url = Uri.parse("$firsturl/loginrestro/forgotPassword/$phone");
+      var res = await http.post(url);
+      // EasyLoading.show(status: 'loading...');
+
+      if (res.statusCode == 200) {
+        EasyLoading.dismiss();
+        forgotfail = null;
+        forgotsucess = res.body.toUpperCase();
+        notifyListeners();
+        EasyLoading.dismiss();
+        return res.body;
+      }
+      forgotfail = res.body;
+      notifyListeners();
+      return null;
+    } catch (ex) {
+      print(ex);
+    }
+  }
+
+    Future verifyOtp(phone,otp) async {
+    try {
+      EasyLoading.show(status: 'loading...');
+      var url = Uri.parse("$firsturl/loginrestro/verifyOtp/$otp/$phone");
+      var res = await http.post(url);
+      // EasyLoading.show(status: 'loading...');
+
+      if (res.statusCode == 200) {
+        print(res.body);
+        EasyLoading.dismiss();
+        userDetails=res.body;
+        otpVarified=true;
+        notifyListeners();
+        EasyLoading.dismiss();
+        return res.body;
+      }
+      print(res.body);
+      EasyLoading.dismiss();
+      otpVarified=false;
+      notifyListeners();
+      return null;
+    } catch (ex) {
+      print(ex);
+    }
+  }
+
+  Future updatePassword(password,token) async {
+    try {
+      EasyLoading.show(status: 'loading...');
+      var url = Uri.parse("$firsturl/loginrestro/updatePassword");
+      var res = await http.post(url,  headers: <String, String>{
+            HttpHeaders.contentTypeHeader: 'application/json',
+             'x-auth-token': token
+          },
+          body: json.encode({
+            'password': password,
+          })
+          );
+
+      if (res.statusCode == 200) {
+        print(res.body);
+        EasyLoading.dismiss();
+        passwordupdated=true;
+        userDetails=res.body;
+        notifyListeners();
+        return res.body;
+      }
+      print(res.body);
+      EasyLoading.dismiss();
+      passwordupdated=false;
+      notifyListeners();
+      return null;
+    } catch (ex) {
+      EasyLoading.dismiss();
+      print(' excpnwa $ex');
+    }
   }
 }

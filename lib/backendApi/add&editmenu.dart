@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart' show ChangeNotifier;
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:path/path.dart';
 import 'package:async/async.dart';
 import 'package:http/http.dart' as http;
@@ -17,6 +18,7 @@ class AddnEditMenu extends ChangeNotifier {
       itmnam, price, itmdetails, typid, itmid, restroId, token) async {
     try {
       var url = Uri.parse("$firsturl/product/$typid/$itmid/$restroId");
+      EasyLoading.show(status: 'loading...');
       var res = await http.put(url,
           headers: <String, String>{
             HttpHeaders.contentTypeHeader: 'application/json',
@@ -25,16 +27,19 @@ class AddnEditMenu extends ChangeNotifier {
           body: json.encode(
               {'itemName': itmnam, 'price': price, 'itmDetails': itmdetails}));
       if (res.statusCode == 200) {
+        EasyLoading.dismiss();
         errorMsg = null;
         sucessMsg = res.body.toUpperCase();
         // userDetails = res.headers['x-auth-token'];
         notifyListeners();
         return res.body;
       }
+      EasyLoading.dismiss();
       errorMsg = res.body;
       notifyListeners();
       return null;
     } catch (ex) {
+      EasyLoading.dismiss();
       print(ex);
     }
   }
@@ -42,6 +47,7 @@ class AddnEditMenu extends ChangeNotifier {
   Future editInStock(typid, itmid, restroId, token, inStock) async {
     try {
       var url = Uri.parse("$firsturl/product/$typid/$itmid/$restroId");
+      EasyLoading.show(status: 'loading...');
       var res = await http.put(url,
           headers: <String, String>{
             HttpHeaders.contentTypeHeader: 'application/json',
@@ -50,6 +56,7 @@ class AddnEditMenu extends ChangeNotifier {
           },
           body: json.encode({'inStock': inStock}));
       if (res.statusCode == 200) {
+        EasyLoading.dismiss();
         itminStockFail = null;
         itminstocSucess = res.body.toUpperCase();
         // userDetails = res.headers['x-auth-token'];
@@ -57,81 +64,56 @@ class AddnEditMenu extends ChangeNotifier {
         print(itminstocSucess ?? itminStockFail);
         return res.body;
       }
+      EasyLoading.dismiss();
       itminStockFail = res.body;
       notifyListeners();
       return null;
     } catch (e) {
+      EasyLoading.dismiss();
       print(e);
     }
   }
 
-  Future addItems(token, id, itemName, bool isveg, File file, price, foodtype,
+  Future addItems(token, id, itemName, bool isveg, imgUrl, price, foodtype,
       itmDetails, category) async {
-    var stream = http.ByteStream(DelegatingStream.typed(file.openRead()));
-    var length = await file.length();
     try {
       var url = Uri.parse("$firsturl/product");
-      // var res = await http.post(url,
-      //     headers: <String, String>{
-      //       HttpHeaders.contentTypeHeader: 'application/json',
-      //       'x-auth-token': token
-      //     },
-      var res = await http.MultipartRequest('POST', url);
+      EasyLoading.show(status: 'loading...');
+        var res = 
+    await http.post(url,
+        headers: <String, String>{
+          HttpHeaders.contentTypeHeader: 'application/json',
+          'x-auth-token': token
+        },
+        body: json.encode({
+          'restroId':id,
+          'itemName': itemName,
+          'isveg': isveg,
+          'foodtype':foodtype,
+          'category':category,
+          'itmImg':imgUrl,
+          'price':price,
+          'itmDetails':itmDetails 
+        }));
 
-      res.fields.addAll({
-        'restroId': id,
-        'itemName': itemName,
-        'isveg': isveg.toString(),
-        'price': price,
-        'foodtype': foodtype,
-        'category': category
-      });
-      var multipartFile = http.MultipartFile('itmImg', stream, length,
-          filename: basename(file.path));
-      res.files.add(multipartFile);
-      res.headers.addAll(
-          {"Content-type": "multipart/form-data", 'x-auth-token': token});
-      try {
-        var response = await http.Response.fromStream(await res.send());
-        ;
-        if (response.statusCode == 200) {
-          uploadedSucess = response.body;
+        if (res.statusCode == 200) {
+          EasyLoading.dismiss();
+          uploadedSucess = res.body;
           uploadedFail = null;
           notifyListeners();
           print(uploadedSucess);
-          return response;
+          return res.body;
         }
+        EasyLoading.dismiss();
         uploadedSucess = null;
-        uploadedFail = response.body.toUpperCase();
+        uploadedFail = res.body;
         notifyListeners();
         print(uploadedFail);
         return null;
-      } on Exception catch (e) {
-        print(e);
-      }
-
-      //     body: json.encode({
-      //       'restroId': id,
-      //       'itemName': itemName,
-      //       'isveg': isveg,
-      //       'itmImg': file,
-      //       'price': price,
-      //       'inStock': inStock,
-      //       'foodtype': foodtype,
-      //       'itmDetails': itmDetails,
-      //       'category': category
-      //     }));
-      // if (res.statusCode == 200) {
-      //   uploadedSucess = res.body;
-      //   uploadedFail = null;
-      //   notifyListeners();
-      //   return res.body;
-      // }
-      // uploadedFail = res.body;
-      // notifyListeners();
-      // return null;
     } catch (e) {
+      EasyLoading.dismiss();
       print(e);
+      return;
     }
   }
 }

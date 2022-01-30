@@ -17,6 +17,7 @@ class _ProfileAppState extends State<ProfileApp> {
   Future getRestroById(id)async{
     var restroByid=Provider.of<LoginRestro>(context,listen: false);
    var restrodetails= await restroByid.getRestroDetails(id);
+   print(id);
    return restrodetails;
   }
 
@@ -124,7 +125,7 @@ class _ProfileAppState extends State<ProfileApp> {
                                         height: 5.0,
                                       ),
                                       Text(
-                                        snapshot.data['allOrders'].length.toString(),
+                                       '${snapshot.data['allOrders'].length}' ,
                                         style: TextStyle(
                                           fontSize: 20.0,
                                           color: Colors.pinkAccent,

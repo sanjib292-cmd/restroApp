@@ -1,16 +1,21 @@
 import 'dart:io';
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:jwt_decode/jwt_decode.dart';
 import 'package:restro_app/backendApi/add&editmenu.dart';
+import 'package:restro_app/backendApi/uploadFile.dart';
 import 'package:restro_app/designs/customAlertdilog.dart';
+import 'package:path/path.dart';
 
 class AddorEditMenu extends StatefulWidget {
   var token;
-  var payload;
-  AddorEditMenu({this.token, this.payload});
+
+  AddorEditMenu({this.token});
 
   @override
   _AddorEditMenuState createState() => _AddorEditMenuState();
@@ -33,12 +38,15 @@ class _AddorEditMenuState extends State<AddorEditMenu> {
     }
   }
 
-  var itemName, isveg, file, price, inStock, foodtype, itmDetails, category;
+  var itemName, isveg, file, price, inStock, foodtype, category;
+  String itmDetails='';
 
   var cusineTyp;
   bool itmVegornonveg = false;
   @override
   Widget build(BuildContext context) {
+    UploadTask? task;
+    //FirebaseApi firebaseApi = FirebaseApi();
     AddnEditMenu addnEditMenu = AddnEditMenu();
     print('this fuck${widget.token}');
     return Scaffold(
@@ -216,9 +224,7 @@ class _AddorEditMenuState extends State<AddorEditMenu> {
                                         });
                                         print(itmVegornonveg);
                                       },
-                                    )
-              
-                                    ),
+                                    )),
                               )
                             ],
                           )
@@ -234,52 +240,87 @@ class _AddorEditMenuState extends State<AddorEditMenu> {
                 width: 300,
                 child: TextButton(
                     onPressed: () async {
-                      try {
-                        if (itemName == null ||
-                            img.path == null ||
-                            price == null ||
-                            cusineTyp == null ||
-                            category == null) {
-                          showDialog(
-                              context: context,
-                              builder: (con) {
-                                return CustomDialogBox(
-                                  title: "Reuired field can't be null",
-                                  descriptions: "Recheck form and submit..",
-                                );
-                              });
-                        } else {
-                          await addnEditMenu.addItems(
-                              widget.token,
-                              widget.payload['id'],
-                              itemName,
-                              itmVegornonveg,
-                              File(img.path),
-                              price,
-                              cusineTyp,
-                              itmDetails,
-                              category);
-                          //if (addnEditMenu.sucessMsg != null) {
+                      var payload = Jwt.parseJwt(widget.token);
 
-                          try {
-                            return showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    title: Text(addnEditMenu.uploadedSucess ??
-                                        addnEditMenu.uploadedFail),
-                                  );
-                                });
-                          } on Exception catch (e) {
-                            print(e);
+                      try {
+                        if (img.path == null) {
+                          return;
+                        } else {
+                          final filename = basename(img.path);
+                          final destination = 'itmImg/$filename';
+                          EasyLoading.showInfo('Uploading..');
+                          task = FirebaseApi.uploadTask(
+                              destination, File(img.path));
+                          if (task == null) {
+                            EasyLoading.dismiss();
+                            return;
+                          } else {
+                          final snap= await task!
+                          .whenComplete(() {} );
+                          final url= await snap.ref.getDownloadURL();
+                          EasyLoading.dismiss();
+                          // if(url==null){
+                          //   print('null');
+                          // }
+                          print(url);
+                            //.then((value) async {
+                                try {
+                                  if (itemName == null ||
+                                      url == null ||
+                                      price == null ||
+                                      cusineTyp == null ||
+                                      category == null) {
+                                    showDialog(
+                                        context: context,
+                                        builder: (con) {
+                                          return CustomDialogBox(
+                                            title:
+                                                "Reuired field can't be null",
+                                            descriptions:
+                                                "Recheck form and submit..",
+                                          );
+                                        });
+                                  } else {
+                                    await addnEditMenu.addItems(
+                                        widget.token,
+                                        payload['id'].toString(),
+                                        itemName,
+                                        itmVegornonveg,
+                                        url,
+                                        price,
+                                        cusineTyp,
+                                        itmDetails,
+                                        category);
+                                    //if (addnEditMenu.sucessMsg != null) {
+
+                                    try {
+                                      return showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return AlertDialog(
+                                              title: Text(addnEditMenu
+                                                      .uploadedSucess ??
+                                                  addnEditMenu.uploadedFail),
+                                            );
+                                          });
+                                    } on Exception catch (e) {
+                                      print(e);
+                                    }
+                                  }
+                                } catch (e) {
+                                  showDialog(
+                                      context: context,
+                                      builder: (con) {
+                                        return AlertDialog(
+                                            title: Text(e.toString()));
+                                      });
+                                }
+                             // });
+                            //});
                           }
                         }
-                      } catch (e) {
-                        showDialog(
-                            context: context,
-                            builder: (con) {
-                              return AlertDialog(title: Text(e.toString()));
-                            });
+                      } on Exception catch (e) {
+                        print(e);
                       }
                     },
                     child: Text('Add to menu',
