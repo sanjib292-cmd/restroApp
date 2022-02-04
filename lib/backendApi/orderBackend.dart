@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io' show HttpHeaders;
 
 import 'package:flutter/material.dart' show BuildContext, ChangeNotifier;
@@ -8,10 +9,11 @@ import 'package:http/http.dart' as http;
 import 'package:restro_app/designs/snakbar.dart';
 
 class OrderBackend extends ChangeNotifier {
-  StreamController _postsController=StreamController();
+  var paycycleerror;
+  StreamController _postsController = StreamController();
 
-  String firsturl = 'http://192.168.0.103:5000';
-  Future acceptOrder( orderid,token) async {
+  String firsturl = 'https://mealtime7399.herokuapp.com';
+  Future acceptOrder(orderid, token) async {
     EasyLoading.show(status: 'loading...');
     var url = Uri.parse("$firsturl/orders/$orderid");
     var res = await http.put(
@@ -50,9 +52,28 @@ class OrderBackend extends ChangeNotifier {
   //     return null;
   //   }
   // }
+  Future gettendaysOrder(restroId, token) async {
+    var url = Uri.parse("$firsturl/restropay/$restroId");
+    EasyLoading.show(status: 'loading...');
+    var res = await http.get(
+      url,
+      headers: <String, String>{
+        HttpHeaders.contentTypeHeader: 'application/json',
+        'x-auth-token': token
+      },
+    );
+    if (res.statusCode == 200) {
+      EasyLoading.dismiss();
+      print(res.body);
+      return jsonDecode(res.body);
+    }
+    paycycleerror = res.body;
+    notifyListeners();
 
+    return;
+  }
 
-  Future cancelOrder( orderid,token) async {
+  Future cancelOrder(orderid, token) async {
     var url = Uri.parse("$firsturl/orders/cancel/$orderid");
     EasyLoading.show(status: 'loading...');
     var res = await http.put(
@@ -73,4 +94,22 @@ class OrderBackend extends ChangeNotifier {
     }
   }
 
+  getActiveOrders(restroid, token) async {
+    var url = Uri.parse("$firsturl/orders/restroActiveorder/$restroid");
+    EasyLoading.show(status: 'loading...');
+    var res = await http.get(
+      url,
+      headers: <String, String>{
+        HttpHeaders.contentTypeHeader: 'application/json',
+        'x-auth-token': token
+      },
+    );
+    if(res.statusCode==200){
+      //print(res.body);
+      EasyLoading.dismiss();
+      return jsonDecode(res.body);
+    }
+    EasyLoading.dismiss();
+    return null;
+  }
 }

@@ -73,106 +73,108 @@ class _EditMenuState extends State<EditMenu> {
       appBar: AppBar(
         title: Text('Edit Item'),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              readOnly:true,
-              decoration: InputDecoration(
-              hintText: cusineTyp,
-                  enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey))),
-              
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                readOnly:true,
+                decoration: InputDecoration(
+                hintText: cusineTyp,
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey))),
+                
+              ),
             ),
-          ),
-          
-          Form(
-            key: formkey,
-            child: editingTextfield('Item Name', '$itmName', (val) {
+            
+            Form(
+              key: formkey,
+              child: editingTextfield('Item Name', '$itmName', (val) {
+                setState(() {
+                  itmName = val;
+                  print(itmName);
+                });
+              }),
+            ),
+            editingTextfield('Price', '$itmPrice', (val) {
               setState(() {
-                itmName = val;
-                print(itmName);
+                itmPrice = val;
               });
             }),
-          ),
-          editingTextfield('Price', '$itmPrice', (val) {
-            setState(() {
-              itmPrice = val;
-            });
-          }),
-          editingTextfield('Item Details', '$itmDetails', (val) {
-            setState(() {
-              itmDetails = val;
-            });
-          }),
-          Container(
-            color: Colors.green,
-            height: 50,
-            width: 345,
-            child: TextButton(
-                onPressed: () async {
-                  validate();
-                  final SharedPreferences sharedPreferences =
-                      await SharedPreferences.getInstance();
-                  print(
-                      '$itmName,$itmPrice,$itmDetails,${widget.typId},$itmId,$restroId,${sharedPreferences.getString('Account Details')}');
-                  if (validated == false) {
-                    return null;
-                  } else if (sharedPreferences.getString('Account Details') ==
-                      null) {
-                    return showDialog(
+            editingTextfield('Item Details', '$itmDetails', (val) {
+              setState(() {
+                itmDetails = val;
+              });
+            }),
+            Container(
+              color: Colors.green,
+              height: 50,
+              width: 345,
+              child: TextButton(
+                  onPressed: () async {
+                    validate();
+                    final SharedPreferences sharedPreferences =
+                        await SharedPreferences.getInstance();
+                    print(
+                        '$itmName,$itmPrice,$itmDetails,${widget.typId},$itmId,$restroId,${sharedPreferences.getString('Account Details')}');
+                    if (validated == false) {
+                      return null;
+                    } else if (sharedPreferences.getString('Account Details') ==
+                        null) {
+                      return showDialog(
+                          context: context,
+                          builder: (con) {
+                            return CustomDialogBox(
+                                title: "Invalid Opration",
+                                descriptions: "Token expired..please login",
+                                img:
+                                    "https://freefrontend.com/assets/img/html-funny-404-pages/SVG-Animation-404-Page.png",
+                                text: "Login");
+                            // AlertDialog(
+                            //   title: Text('Token expired please login..'),
+                            //   content:TextButton(child: Text('Login'),onPressed: (){},)
+                            // );
+                          });
+                    }
+                    await editItm.editItms(
+                        itmName,
+                        itmPrice,
+                        itmDetails,
+                        widget.typId,
+                        itmId,
+                        restroId,
+                        sharedPreferences.getString('Account Details'));
+                    showDialog(
                         context: context,
-                        builder: (con) {
-                          return CustomDialogBox(
-                              title: "Invalid Opration",
-                              descriptions: "Token expired..please login",
-                              img:
-                                  "https://freefrontend.com/assets/img/html-funny-404-pages/SVG-Animation-404-Page.png",
-                              text: "Login");
-                          // AlertDialog(
-                          //   title: Text('Token expired please login..'),
-                          //   content:TextButton(child: Text('Login'),onPressed: (){},)
-                          // );
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text(editItm.sucessMsg ?? editItm.errorMsg),
+                            actions: [
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.pushReplacement(context,
+                                        MaterialPageRoute(builder: (con) {
+                                      return ChangeNotifierProvider(
+                                          create: (BuildContext context) {
+                                            return LoginRestro();
+                                          },
+                                          child: HomePage());
+                                    }));
+                                  },
+                                  child: Text('Home'))
+                            ],
+                          );
                         });
-                  }
-                  await editItm.editItms(
-                      itmName,
-                      itmPrice,
-                      itmDetails,
-                      widget.typId,
-                      itmId,
-                      restroId,
-                      sharedPreferences.getString('Account Details'));
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: Text(editItm.sucessMsg ?? editItm.errorMsg),
-                          actions: [
-                            TextButton(
-                                onPressed: () {
-                                  Navigator.pushReplacement(context,
-                                      MaterialPageRoute(builder: (con) {
-                                    return ChangeNotifierProvider(
-                                        create: (BuildContext context) {
-                                          return LoginRestro();
-                                        },
-                                        child: HomePage());
-                                  }));
-                                },
-                                child: Text('Home'))
-                          ],
-                        );
-                      });
-                },
-                child: Text('Save Changes',
-                    style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                        fontSize: 16))),
-          ),
-        ],
+                  },
+                  child: Text('Save Changes',
+                      style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                          fontSize: 16))),
+            ),
+          ],
+        ),
       ),
     );
   }

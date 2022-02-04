@@ -13,7 +13,7 @@ class AddnEditMenu extends ChangeNotifier {
   var itminStockFail;
   var uploadedSucess;
   var uploadedFail;
-  String firsturl = 'http://192.168.0.103:5000';
+  String firsturl = 'https://mealtime7399.herokuapp.com';
   Future editItms(
       itmnam, price, itmdetails, typid, itmid, restroId, token) async {
     try {

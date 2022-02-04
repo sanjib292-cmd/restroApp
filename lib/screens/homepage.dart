@@ -1,4 +1,4 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,39 +12,40 @@ import 'package:restro_app/screens/activeOrders.dart';
 import 'package:restro_app/screens/addoreditmenu.dart';
 import 'package:restro_app/screens/loginscreen.dart';
 import 'package:restro_app/screens/pastOrders.dart';
+import 'package:restro_app/screens/paymentspage.dart';
 import 'package:restro_app/screens/restroAccount.dart';
 import 'package:restro_app/screens/restroMenu.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  var userDetails;
+  HomePage({this.userDetails});
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  
   // ignore: unused_field
-  var userDetails;
-  getUserdetails() async {
-    print('this1');
-    final SharedPreferences sharedPreferences =
-        await SharedPreferences.getInstance();
-    var userdetails = sharedPreferences.getString('Account Details');
-    print('rnd $userdetails');
-    setState(() {
-      userDetails = userdetails;
-    });
-  }
+  // var userDetails;
+  // getUserdetails() async {
+  //   final SharedPreferences sharedPreferences =
+  //       await SharedPreferences.getInstance();
+  //   var userdetails = sharedPreferences.getString('Account Details');
+  //   //print('rnd $userdetails');
+  //   setState(() {
+  //     userDetails = userdetails;
+  //   });
+  // }
 
   Future ifTokennull() async {
-    print('this2');
+    //print('this2');
     final SharedPreferences sharedPreferences =
         await SharedPreferences.getInstance();
     if (sharedPreferences.getString('Account Details') == null) {
-      print('this trig');
+      //print('this trig');
       showDialog(
           context: context,
           builder: (con) {
@@ -53,7 +54,7 @@ class _HomePageState extends State<HomePage> {
               descriptions:
                   """Please login to acess your account and manage orders...""",
              // text: "Login",
-              img: '${Jwt.parseJwt(userDetails)['imgurl']}',
+              img: '${Jwt.parseJwt(widget.userDetails)['imgurl']}',
             );
           });
       Future.delayed(Duration(seconds: 1), () {
@@ -69,68 +70,60 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  checkIftokenExp() async {
-    print('this3');
-    final SharedPreferences sharedPreferences =
-        await SharedPreferences.getInstance();
-    print(JwtDecoder.getExpirationDate(
-        sharedPreferences.getString('Account Details').toString()));
-    if (JwtDecoder.isExpired(
-        sharedPreferences.getString('Account Details').toString())) {
-      //final pref = await SharedPreferences.getInstance();
-      await sharedPreferences.clear();
-      showDialog(
-          context: context,
-          builder: (con) {
-            return CustomDialogBox(
-              title: "Session timeout",
-              descriptions:
-                  """Please login to acess your account and manage orders...""",
-             // text: "Login",
-            );
-            // AlertDialog(
-            //     title: Text('Token Expired Please Log in..'),
-            //     content: TextButton(
-            //       child: Text('Login'),
-            //       onPressed: () {
-            //         Navigator.pop(context);
-            //       },
-            //     ));
-          });
-      Future.delayed(Duration(seconds: 1), () {
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) {
-          return ChangeNotifierProvider(
-              create: (BuildContext context) {
-                return LoginRestro();
-              },
-              child: LoginScreen());
-        }));
-      });
+  // checkIftokenExp() async {
+  //   print('this3');
+  //   final SharedPreferences sharedPreferences =
+  //       await SharedPreferences.getInstance();
+  //   // print(JwtDecoder.getExpirationDate(
+  //   //     sharedPreferences.getString('Account Details').toString()));
+  //   if (JwtDecoder.isExpired(
+  //       sharedPreferences.getString('Account Details').toString())) {
+  //     //final pref = await SharedPreferences.getInstance();
+  //     await sharedPreferences.clear();
+  //     showDialog(
+  //         context: context,
+  //         builder: (con) {
+  //           return CustomDialogBox(
+  //             title: "Session timeout",
+  //             descriptions:
+  //                 """Please login to acess your account and manage orders...""",
+  //            // text: "Login",
+  //           );
+  //         });
+  //     Future.delayed(Duration(seconds: 1), () {
+  //       Navigator.pushReplacement(context,
+  //           MaterialPageRoute(builder: (context) {
+  //         return ChangeNotifierProvider(
+  //             create: (BuildContext context) {
+  //               return LoginRestro();
+  //             },
+  //             child: LoginScreen());
+  //       }));
+  //     });
 
-      //valueNotifier.value = _pcm; //provider
-      //setState
+  //     //valueNotifier.value = _pcm; //provider
+  //     //setState
 
-    }
-  }
+  //   }
+  // }
 
   int currentIndex = 0;
   @override
   void initState() {
-    getUserdetails();
+    //getUserdetails();
+    ifTokennull();
     //ifTokennull();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    print('weare in home $userDetails');
-    ifTokennull();
-    checkIftokenExp();
+    //print('weare in home $userDetails');
+   
+    //checkIftokenExp();
 
     final restroLogin = Provider.of<LoginRestro>(context, listen: false);
-    Map<String, dynamic> payload = Jwt.parseJwt(userDetails);
-
+    Map<String, dynamic> payload = Jwt.parseJwt(widget.userDetails);
     final List<Widget> _children = [
       MultiProvider(
           providers: [
@@ -143,12 +136,12 @@ class _HomePageState extends State<HomePage> {
           ],
           //child: ChangeNotifierProvider(create: (BuildContext context) { return LoginRestro(); },
           child: ActiveOrders(
-            userDetails: userDetails,
+            userDetails: widget.userDetails,
           )),
       ChangeNotifierProvider(
         create: (BuildContext context) { return LoginRestro(); },
         child: AddorEditMenu(
-          token: userDetails,
+          token: widget.userDetails,
           //payload: payload,
         ),
       ),
@@ -156,58 +149,70 @@ class _HomePageState extends State<HomePage> {
           create: (BuildContext context) {
             return LoginRestro();
           },
-          child: RestroMenu(payLoad: payload, token: userDetails)),
-      Pastorders(),
+          child: RestroMenu(payLoad: payload, token: widget.userDetails)),
+    //  Pastorders(),
       ChangeNotifierProvider(
           create: (BuildContext context) {
             return LoginRestro();
           },
-          child: ProfileApp(userDetails: userDetails,)),
+          child: ProfileApp(userDetails: widget.userDetails,)),
     ];
     return Scaffold(
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(70.0),
           child: AppBar(
+            automaticallyImplyLeading: false,
+            backwardsCompatibility: false,
             title: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
                   child: Row(
-                    // ignore: prefer_const_literals_to_create_immutables
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        "Accept Order",
-                        style: GoogleFonts.poppins(color: Colors.black),
-                      ),
-                    
+                      Row(
+                        // ignore: prefer_const_literals_to_create_immutables
+                        children: [
+                          Text(
+                            "Accept Order",
+                            style: GoogleFonts.poppins(color: Colors.black),
+                          ),
+                        
                  
-                      Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Transform.scale(
-                            scale: 1.5,
-                            child: FutureBuilder(
-                              future:
-                                  restroLogin.getRestroDetails(payload['id']),
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<dynamic> snapshot) {
-                                if (snapshot.data != null) {
-                                  print(snapshot.data['name']);
-                                  return Switch(
-                                      activeColor: Colors.blue,
-                                      activeTrackColor: Colors.green,
-                                      inactiveThumbColor: Colors.white60,
-                                      inactiveTrackColor: Colors.red,
-                                      onChanged: (value) {
-                                        setState(() {});
-                                      },
-                                      value: snapshot.data['isOpen']);
-                                }
-                                print('${snapshot.data}tht');
-                                return CircularProgressIndicator();
-                              },
-                            ),
-                          ))
+                          Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Transform.scale(
+                                scale: 1.5,
+                                child: FutureBuilder(
+                                  future:
+                                      restroLogin.getRestroDetails(payload['id']),
+                                  builder: (BuildContext context,
+                                      AsyncSnapshot<dynamic> snapshot) {
+                                    if (snapshot.data != null) {
+                                      print(snapshot.data['name']);
+                                      return Switch(
+                                          activeColor: Colors.blue,
+                                          activeTrackColor: Colors.green,
+                                          inactiveThumbColor: Colors.white60,
+                                          inactiveTrackColor: Colors.red,
+                                          onChanged: (value) async{
+                                           await restroLogin.updateStatus(payload['id'],value,widget.userDetails);
+                                            setState(() {});
+                                          },
+                                          value: snapshot.data['isOpen']);
+                                    }
+                                    print('${snapshot.data}tht');
+                                    return CircularProgressIndicator();
+                                  },
+                                ),
+                              ))
+                        ],
+                      ),
+                      MaterialButton(onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (con){
+                        return ChangeNotifierProvider(create: (BuildContext context) { return OrderBackend(); },
+                        child: Paymentspage(restroId: payload['id'],token: widget.userDetails,));
+                      }));},child: Text('Payments',style: GoogleFonts.poppins(color: Colors.blue,fontWeight: FontWeight.bold),),)
                     ],
                   ),
                 ),
@@ -231,9 +236,9 @@ class _HomePageState extends State<HomePage> {
           currentIndex: currentIndex,
           items: [
             bottomappbarItms(FontAwesomeIcons.utensils, 'Active Orders'),
-            bottomappbarItms(FontAwesomeIcons.calendarAlt, 'Add New Item'),
+            bottomappbarItms(FontAwesomeIcons.calendarAlt, 'Add New'),
             bottomappbarItms(FontAwesomeIcons.edit, 'Edit Item'),
-            bottomappbarItms(FontAwesomeIcons.pizzaSlice, 'Past Orders'),
+            //bottomappbarItms(FontAwesomeIcons.pizzaSlice, 'Past Orders'),
             bottomappbarItms(FontAwesomeIcons.user, 'Account'),
           ],
         ),

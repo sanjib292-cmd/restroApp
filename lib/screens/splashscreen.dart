@@ -29,23 +29,27 @@ class _FetchLocState extends State<FetchLoc> {
     var userdetails = sharedPreferences.getString('Account Details');
     // print('fuking $userdetails');
     if (userdetails != null) {
-      
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (con) {
-        return ChangeNotifierProvider(
-          create: (BuildContext context) {
-            return LoginRestro();
-          },
-          child: HomePage(),
-        );
-      }));
-    } else {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (con) {
-        return ChangeNotifierProvider(
+      Future.delayed(Duration(seconds: 5), () {
+        return Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (con) {
+          return ChangeNotifierProvider(
             create: (BuildContext context) {
               return LoginRestro();
             },
-            child: LoginScreen());
-      }));
+            child: HomePage(userDetails:userdetails,),
+          );
+        }));
+      });
+    } else {
+      Future.delayed(Duration(seconds: 2), () {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (con) {
+          return ChangeNotifierProvider(
+              create: (BuildContext context) {
+                return LoginRestro();
+              },
+              child: LoginScreen());
+        }));
+      });
     }
     // print('null');
   }
@@ -60,11 +64,13 @@ class _FetchLocState extends State<FetchLoc> {
             child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              height: 180,
-              width: 180,
-              decoration: BoxDecoration(
-                  image: DecorationImage(image: AssetImage('images/LOGO.png'))),
+            CircleAvatar(
+              radius: 50,
+              backgroundImage: AssetImage('images/LOGO.png'),
+              // height: 180,
+              // width: 180,
+              // decoration: BoxDecoration(
+              //     image: DecorationImage(image: AssetImage('images/LOGO.png'))),
             ),
             // Row(
             //   mainAxisAlignment: MainAxisAlignment.center,

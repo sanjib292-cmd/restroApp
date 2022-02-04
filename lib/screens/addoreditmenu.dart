@@ -42,7 +42,7 @@ class _AddorEditMenuState extends State<AddorEditMenu> {
   String itmDetails='';
 
   var cusineTyp;
-  bool itmVegornonveg = false;
+  bool itmVeg = false;
   @override
   Widget build(BuildContext context) {
     UploadTask? task;
@@ -203,29 +203,34 @@ class _AddorEditMenuState extends State<AddorEditMenu> {
                             ),
                           ),
                           SizedBox(height: 25),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                          Column(
                             children: [
-                              Text(itmVegornonveg ? "Veg" : "Non-Veg",
-                                  style: GoogleFonts.poppins(
-                                      color: itmVegornonveg
-                                          ? Colors.green
-                                          : Colors.red,
-                                      fontWeight: FontWeight.w500)),
-                              SizedBox(
-                                child: ButtonTheme(
-                                    alignedDropdown: true,
-                                    child: Checkbox(
-                                      checkColor: Colors.white,
-                                      value: itmVegornonveg,
-                                      onChanged: (bool? value) {
-                                        setState(() {
-                                          itmVegornonveg = value!;
-                                        });
-                                        print(itmVegornonveg);
-                                      },
-                                    )),
-                              )
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(itmVeg ? "Veg" : "Non-Veg",
+                                      style: GoogleFonts.poppins(
+                                          color: itmVeg
+                                              ? Colors.green
+                                              : Colors.red,
+                                          fontWeight: FontWeight.w500)),
+                                  SizedBox(
+                                    child: ButtonTheme(
+                                        alignedDropdown: true,
+                                        child: Checkbox(
+                                          checkColor: Colors.white,
+                                          value: itmVeg,
+                                          onChanged: (bool? value) {
+                                            setState(() {
+                                              itmVeg = value!;
+                                            });
+                                            print(itmVeg);
+                                          },
+                                        )),
+                                  )
+                                ],
+                              ),
+                              Text('Item is non-veg tick the box to change to veg',style: GoogleFonts.poppins(),)
                             ],
                           )
                         ],
@@ -285,7 +290,7 @@ class _AddorEditMenuState extends State<AddorEditMenu> {
                                         widget.token,
                                         payload['id'].toString(),
                                         itemName,
-                                        itmVegornonveg,
+                                        itmVeg,
                                         url,
                                         price,
                                         cusineTyp,

@@ -14,7 +14,7 @@ class LoginRestro extends ChangeNotifier {
   bool passwordupdated=false;
   bool varifiedUser = false;
   var restrDetails;
-  String firsturl = 'http://192.168.0.103:5000';
+  String firsturl = 'https://mealtime7399.herokuapp.com';
   Future loginRestro(phone, password,fcmToken) async {
     try {
       EasyLoading.show(status: 'loading...');
@@ -52,7 +52,7 @@ class LoginRestro extends ChangeNotifier {
   }
 
   Future<Object> getRestroDetails(id) async {
-    print('rund');
+    //print('rund');
     var url = Uri.parse("$firsturl/registerRestro/$id");
     var res = await http.get(
       url,
@@ -63,12 +63,12 @@ class LoginRestro extends ChangeNotifier {
     if (res.statusCode == 200) {
       restrDetails = res.body;
       notifyListeners();
-      final Map parsed = json.decode(res.body);
-      print(parsed.runtimeType);
+      // final Map parsed = json.decode(res.body);
+      // print(parsed.runtimeType);
 
-      return parsed;
+      return jsonDecode(res.body);
     }
-    print('res.body e');
+    print('${res.body}');
     return '404';
   }
 
@@ -152,5 +152,22 @@ class LoginRestro extends ChangeNotifier {
       EasyLoading.dismiss();
       print(' excpnwa $ex');
     }
+  }
+
+Future updateStatus(id,val,token)async{
+var url = Uri.parse("$firsturl/registerRestro/changeStatus/$id/$val");
+  EasyLoading.show(status: 'loading...');
+     // var url = Uri.parse("$firsturl/loginrestro/updatePassword");
+      var res = await http.post(url,  headers: <String, String>{
+            HttpHeaders.contentTypeHeader: 'application/json',
+             'x-auth-token': token
+          },);
+        if(res.statusCode==200){
+          EasyLoading.dismiss();
+          return res.body;
+        }
+        EasyLoading.dismiss();
+        return null;
+
   }
 }
