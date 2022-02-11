@@ -1,13 +1,17 @@
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:provider/provider.dart';
 import 'package:restro_app/backendApi/loginRestro.dart';
 import 'package:restro_app/backendApi/orderBackend.dart';
 import 'package:restro_app/designs/customAlertdilog.dart';
+import 'package:restro_app/designs/snakbar.dart';
 import 'package:restro_app/screens/activeOrders.dart';
 import 'package:restro_app/screens/addoreditmenu.dart';
 import 'package:restro_app/screens/loginscreen.dart';
@@ -27,6 +31,25 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  checkInernetonnection()async{
+  //final bool isConnected = await InternetConnectionChecker().hasConnection;
+  final StreamSubscription<InternetConnectionStatus> listener =
+      InternetConnectionChecker().onStatusChange.listen(
+    (InternetConnectionStatus status) {
+      switch (status) {
+        case InternetConnectionStatus.connected:
+          break;
+        case InternetConnectionStatus.disconnected:
+          return snackBar('Internet not connected', context);
+
+      }
+    },
+  );
+
+  // close listener after 30 seconds, so the program doesn't run forever
+  await Future<void>.delayed(const Duration(seconds: 30));
+  await listener.cancel();
+  }
   
   // ignore: unused_field
   // var userDetails;
@@ -44,7 +67,7 @@ class _HomePageState extends State<HomePage> {
     //print('this2');
     final SharedPreferences sharedPreferences =
         await SharedPreferences.getInstance();
-    if (sharedPreferences.getString('Account Details') == null) {
+    if (sharedPreferences.getString('Account Details') == 'null') {
       //print('this trig');
       showDialog(
           context: context,
@@ -118,6 +141,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    checkInernetonnection();
+    ifTokennull();
     //print('weare in home $userDetails');
    
     //checkIftokenExp();
@@ -202,17 +227,28 @@ class _HomePageState extends State<HomePage> {
                                           },
                                           value: snapshot.data['isOpen']);
                                     }
-                                    print('${snapshot.data}tht');
-                                    return CircularProgressIndicator();
+                                     return Container(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator());
                                   },
                                 ),
                               ))
                         ],
                       ),
-                      MaterialButton(onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (con){
+                      GestureDetector(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (con){
                         return ChangeNotifierProvider(create: (BuildContext context) { return OrderBackend(); },
                         child: Paymentspage(restroId: payload['id'],token: widget.userDetails,));
-                      }));},child: Text('Payments',style: GoogleFonts.poppins(color: Colors.blue,fontWeight: FontWeight.bold),),)
+                      }));
+                        },
+                        child: Text('Payments',style: GoogleFonts.poppins(color: Colors.blue,fontWeight: FontWeight.w600),)),
+
+                      // MaterialButton(onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (con){
+                      //   return ChangeNotifierProvider(create: (BuildContext context) { return OrderBackend(); },
+                      //   child: Paymentspage(restroId: payload['id'],token: widget.userDetails,));
+                      // }));},child: Text('Payments',style: GoogleFonts.poppins(color: Colors.blue,fontWeight: FontWeight.bold),),)
                     ],
                   ),
                 ),

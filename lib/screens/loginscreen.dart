@@ -55,7 +55,8 @@ class _LoginScreenState extends State<LoginScreen> {
             height: 180,
             width: 180,
             decoration: BoxDecoration(
-                image: DecorationImage(image: AssetImage('images/foodie.png'))),
+              borderRadius: BorderRadius.circular(6),
+                image: DecorationImage(image: AssetImage('images/LOGO.png'))),
           ),
           Column(
             children: [
@@ -149,7 +150,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               create: (BuildContext context) {
                                 return LoginRestro();
                               },
-                              child: HomePage(),
+                              child: HomePage(userDetails: restroLogin.userDetails,),
                             );
                           }));
                        

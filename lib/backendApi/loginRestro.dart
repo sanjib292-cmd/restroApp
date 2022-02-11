@@ -54,6 +54,7 @@ class LoginRestro extends ChangeNotifier {
   Future<Object> getRestroDetails(id) async {
     //print('rund');
     var url = Uri.parse("$firsturl/registerRestro/$id");
+    EasyLoading.show(status: 'loading...');
     var res = await http.get(
       url,
       headers: <String, String>{
@@ -61,6 +62,7 @@ class LoginRestro extends ChangeNotifier {
       },
     );
     if (res.statusCode == 200) {
+      EasyLoading.dismiss();
       restrDetails = res.body;
       notifyListeners();
       // final Map parsed = json.decode(res.body);
@@ -68,6 +70,7 @@ class LoginRestro extends ChangeNotifier {
 
       return jsonDecode(res.body);
     }
+    EasyLoading.dismiss();
     print('${res.body}');
     return '404';
   }

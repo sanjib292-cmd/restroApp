@@ -97,7 +97,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    FlutterRingtonePlayer.stop();
+    //FlutterRingtonePlayer.stop();
     getToken();
     var initializSettingAndroid =
         const AndroidInitializationSettings('@mipmap/ic_launcher');

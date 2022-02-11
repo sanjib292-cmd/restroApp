@@ -3,6 +3,7 @@ import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:jwt_decode/jwt_decode.dart';
@@ -11,6 +12,7 @@ import 'package:restro_app/backendApi/loginRestro.dart';
 import 'package:restro_app/backendApi/orderBackend.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ActiveOrders extends StatefulWidget {
   var userDetails;
@@ -27,6 +29,14 @@ class _ActiveOrdersState extends State<ActiveOrders>
   Future getrestroActiveOrder(restroid, token) async {
     var orderAccept = Provider.of<OrderBackend>(context, listen: false);
     return await orderAccept.getActiveOrders(restroid, token);
+  }
+
+   Future<void> makePhoneCall(String phoneNumber) async {
+    final Uri launchUri = Uri(
+      scheme: 'tel',
+      path: '+91'+phoneNumber,
+    );
+    await launch(launchUri.toString());
   }
 
   // Stream<int> getActiveorder(restroid, token) async* {
@@ -65,6 +75,7 @@ class _ActiveOrdersState extends State<ActiveOrders>
                       builder: (con, AsyncSnapshot<dynamic> snp) {
                         if (snp.connectionState == ConnectionState.waiting) {
                           return ListView.builder(
+                            reverse: true,
                             shrinkWrap: true,
                             itemCount: 3,
                             itemBuilder: (BuildContext context, int index) {
@@ -101,6 +112,8 @@ class _ActiveOrdersState extends State<ActiveOrders>
                               style: GoogleFonts.poppins(),
                             ),
                           );
+                        }else if(snp.data==null){
+                          return Center(child: CircularProgressIndicator(),);
                         }
                         // print(snp.data);
 
@@ -108,16 +121,17 @@ class _ActiveOrdersState extends State<ActiveOrders>
                           children: [
                             Expanded(
                               child: ListView.builder(
+                                reverse: true,
                                   physics: ClampingScrollPhysics(),
                                   itemCount: snp.data.length,
                                   scrollDirection: Axis.vertical,
                                   shrinkWrap: true,
                                   itemBuilder: (con, ind) {
                                     final List activeOrder = snp.data;
-                                    activeOrder.sort((a, b) => dateFormat
-                                        .format(DateTime.parse(b['dateOrderd']))
-                                        .compareTo(dateFormat.format(
-                                            DateTime.parse(a['dateOrderd']))));
+                                    // activeOrder.sort((a, b) => dateFormat
+                                    //     .format(DateTime.parse(b['dateOrderd']))
+                                    //     .compareTo(dateFormat.format(
+                                    //         DateTime.parse(a['dateOrderd']))));
                                     return Row(
                                       children: [
                                         Expanded(
@@ -283,8 +297,13 @@ class _ActiveOrdersState extends State<ActiveOrders>
                                                               "Preapration" ||
                                                           activeOrder[ind][
                                                                   'orderStatus'] ==
-                                                              "Canceled" ||
-                                                          activeOrder[ind][
+                                                              "Canceled" 
+                                                          
+                                                      ? Container(
+                                                          height: 0,
+                                                          width: 0,
+                                                        ):
+                                                        activeOrder[ind][
                                                                   'orderStatus'] ==
                                                               "Accepted by delivery partner" ||
                                                           activeOrder[ind][
@@ -292,11 +311,50 @@ class _ActiveOrdersState extends State<ActiveOrders>
                                                               "Delivery partner reached at Restraunt" ||
                                                           activeOrder[ind][
                                                                   'orderStatus'] ==
-                                                              "Delivered"
-                                                      ? Container(
-                                                          height: 0,
-                                                          width: 0,
+                                                              "Delivered"?
+                                                      Column(children: [
+                                                        Row(
+                                                          children: [
+                                                            Text('Accepted by deliveryboy:', style: GoogleFonts
+                                                                    .poppins(
+                                                                      fontWeight: FontWeight.bold,
+                                                                        color: Colors
+                                                                            .black),),
+                                                            Text('${activeOrder[ind][
+                                                                  'delBoy']['name']}', style: GoogleFonts
+                                                                    .poppins(
+                                                                       fontWeight: FontWeight.bold,
+                                                                        color: Colors
+                                                                            .red),)
+                                                          ],
+                                                        ),
+                                                        GestureDetector(
+                                                          onTap: (){makePhoneCall('${activeOrder[ind][
+                                                                    'delBoy']['phone']}');},
+                                                          child: Row(
+                                                            children: [
+                                                                Row(
+                                                                  children: [
+                                                                    Icon(FontAwesomeIcons.mobileAlt,size: 22,),
+                                                                    Text('Call: ', style: GoogleFonts
+                                                                          .poppins(
+                                                                            fontWeight: FontWeight.bold,
+                                                                              color: Colors
+                                                                                  .black),),
+                                                                  ],
+                                                                ),
+                                                              Text('${activeOrder[ind][
+                                                                    'delBoy']['phone']}', style: GoogleFonts
+                                                                      .poppins(
+                                                                         fontWeight: FontWeight.bold,
+                                                                          color: Colors
+                                                                              .red),)
+                                                            ],
+                                                          ),
                                                         )
+
+                                                      ],)
+                                                        
                                                       : Row(
                                                           mainAxisAlignment:
                                                               MainAxisAlignment

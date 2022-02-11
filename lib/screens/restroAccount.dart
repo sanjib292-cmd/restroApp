@@ -4,6 +4,11 @@ import 'package:intl/intl.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 import 'package:provider/provider.dart';
 import 'package:restro_app/backendApi/loginRestro.dart';
+import 'package:restro_app/screens/loginscreen.dart';
+import 'package:restro_app/screens/privicypolicy.dart';
+import 'package:restro_app/screens/terms.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfileApp extends StatefulWidget {
   var userDetails;
@@ -36,6 +41,17 @@ class _ProfileAppState extends State<ProfileApp> {
     return numbers;
   }
 
+   Future<void> launchsite(String url) async {
+    if (!await launch(
+      url,
+      forceSafariVC: true,
+      forceWebView: true,
+      enableJavaScript: true,
+    )) {
+      throw 'Could not launch $url';
+    }
+  }
+
   Future totalearning(data) async {
     List numbers = [];
     for (var itm in data) {
@@ -60,9 +76,18 @@ class _ProfileAppState extends State<ProfileApp> {
           future: getRestroById(payload['id']),
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
             if (snapshot.data == null) {
-              return CircularProgressIndicator();
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: 50,
+                  ),
+                  Center(child: CircularProgressIndicator()),
+                ],
+              );
             }
-print(snapshot.data);
+//print(snapshot.data);
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
@@ -197,6 +222,74 @@ print(snapshot.data);
                     )),
                 Container(
                   child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                            vertical: 0.0, horizontal: 16.0),
+                    child: ExpansionTile(
+                                          //initiallyExpanded: true,
+                                          tilePadding: EdgeInsets.zero,
+                                          //childrenPadding: ,
+                                          children: [
+                                            GestureDetector(
+                                              onTap: () {
+                                                Navigator.push(context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) {
+                                                  return Privicypolicy();
+                                                }));
+                                              },
+                                              child: Align(
+                                                  alignment: Alignment.topLeft,
+                                                  child: Text('Privacy policy',
+                                                      style: GoogleFonts.poppins(
+                                                          fontWeight:
+                                                              FontWeight.w600))),
+                                            ),
+                                            Divider(
+                                              thickness: 1,
+                                            ),
+                                            GestureDetector(
+                                              onTap: () {
+                                                Navigator.push(context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) {
+                                                  return Termscondition();
+                                                }));
+                                              },
+                                              child: Align(
+                                                  alignment: Alignment.topLeft,
+                                                  child: Text('Terms & Conditions',
+                                                      style: GoogleFonts.poppins(
+                                                          fontWeight:
+                                                              FontWeight.w600))),
+                                            ),
+                                            Divider(
+                                              thickness: 1,
+                                            ),
+                                            GestureDetector(
+                                              onTap: () {
+                                                launchsite(
+                                                    'https://www.chefoo.in/');
+                                              },
+                                              child: Align(
+                                                  alignment: Alignment.topLeft,
+                                                  child: Text('About us',
+                                                      style: GoogleFonts.poppins(
+                                                          fontWeight:
+                                                              FontWeight.w600))),
+                                            )
+                                          ],
+                                          title: Align(
+                                              alignment: Alignment.topLeft,
+                                              child: Text(
+                                                'Explore',
+                                                style: GoogleFonts.poppins(
+                                                    fontWeight: FontWeight.w800),
+                                              )),
+                                        ),
+                  ),
+                ),
+                Container(
+                  child: Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 0.0, horizontal: 16.0),
                       child: Column(
@@ -217,82 +310,78 @@ print(snapshot.data);
                                   itemBuilder: (con, index) {
                                     print(
                                         'Status: ${snapshot.data['completedOrders']}');
-                                    return Expanded(
-                                      // height: 150,
-                                      child: Card(
-                                          elevation: 5,
-                                          child: ListTile(
-                                              title: Text(
-                                                'Status: ${snapshot.data['completedOrders'][index]['orderStatus']}',
-                                                style: GoogleFonts.poppins(
-                                                    color: Colors.green),
-                                              ),
-                                              subtitle: Column(
-                                                children: [
-                                                  ListView.builder(
-                                                      //scrollDirection: Axis.vertical,
-                                                      physics:
-                                                          const NeverScrollableScrollPhysics(),
-                                                      shrinkWrap: true,
-                                                      itemCount: snapshot
-                                                          .data[
-                                                              'completedOrders']
-                                                              [index]
-                                                              ['orderItems']
-                                                          .length,
-                                                      itemBuilder:
-                                                          (context, ind) {
-                                                        print('index is $ind');
-                                                        return Container(
-                                                          height: 50,
-                                                          child: Card(
-                                                            child: Row(
-                                                              children: [
-                                                                Text(
-                                                                    snapshot
-                                                                        .data[
-                                                                            'completedOrders']
-                                                                            [
-                                                                            index]
-                                                                            [
-                                                                            'orderItems']
-                                                                            [
-                                                                            ind]
-                                                                            [
-                                                                            'item']
-                                                                            [
-                                                                            'itemName']
-                                                                        .toString(),
-                                                                    style: GoogleFonts
-                                                                        .poppins())
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        );
-                                                      })
-                                                ],
-                                              )
-                                              // // Text(snapshot.data['allOrders'][0]['orderItems'][0]['price'].toString()),
+                                    return Row(
+                                      children: [
+                                        
+                                        Expanded(
+                                          // height: 150,
+                                          child: Card(
+                                              elevation: 5,
+                                              child: ListTile(
+                                                  title: Text(
+                                                    'Status: ${snapshot.data['completedOrders'][index]['orderStatus']}',
+                                                    style: GoogleFonts.poppins(
+                                                        color: Colors.green),
+                                                  ),
+                                                  subtitle: Column(
+                                                    children: [
+                                                      ListView.builder(
+                                                          //scrollDirection: Axis.vertical,
+                                                          physics:
+                                                              const NeverScrollableScrollPhysics(),
+                                                          shrinkWrap: true,
+                                                          itemCount: snapshot
+                                                              .data[
+                                                                  'completedOrders']
+                                                                  [index]
+                                                                  ['orderItems']
+                                                              .length,
+                                                          itemBuilder:
+                                                              (context, ind) {
+                                                            print(
+                                                                'index is $ind');
+                                                            return Container(
+                                                              height: 50,
+                                                              child: Card(
+                                                                child: Row(
+                                                                  children: [
+                                                                    Text(
+                                                                        snapshot
+                                                                            .data['completedOrders'][index]['orderItems'][ind]['item'][
+                                                                                'itemName']
+                                                                            .toString(),
+                                                                        style: GoogleFonts
+                                                                            .poppins())
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            );
+                                                          })
+                                                    ],
+                                                  )
+                                                  // // Text(snapshot.data['allOrders'][0]['orderItems'][0]['price'].toString()),
 
-                                              //   subtitle: Row(
-                                              //   children: [
-                                              //     Column(
-                                              //       children: [
-                                              //         ListView.builder(
+                                                  //   subtitle: Row(
+                                                  //   children: [
+                                                  //     Column(
+                                                  //       children: [
+                                                  //         ListView.builder(
 
-                                              //           itemCount:snapshot.data['allOrders'][0]['orderItems'].length ,
-                                              //           itemBuilder: (con,ind){
-                                              //             print('hlo');
-                                              //             //print(snapshot.data['allOrders'][index]['orderItems'].length );
-                                              //           return Card(child: Text(snapshot.data['allOrders'][0]['orderItems'][0]['item']['itemName']),);
-                                              //         })
-                                              //       ],
+                                                  //           itemCount:snapshot.data['allOrders'][0]['orderItems'].length ,
+                                                  //           itemBuilder: (con,ind){
+                                                  //             print('hlo');
+                                                  //             //print(snapshot.data['allOrders'][index]['orderItems'].length );
+                                                  //           return Card(child: Text(snapshot.data['allOrders'][0]['orderItems'][0]['item']['itemName']),);
+                                                  //         })
+                                                  //       ],
 
-                                              //     ),
-                                              //     Text(snapshot.data['allOrders']['orderStatus'])
-                                              //   ],
-                                              // ),),
-                                              )),
+                                                  //     ),
+                                                  //     Text(snapshot.data['allOrders']['orderStatus'])
+                                                  //   ],
+                                                  // ),),
+                                                  )),
+                                        ),
+                                      ],
                                     );
                                   })
                             ],
@@ -498,16 +587,19 @@ print(snapshot.data);
                           ),
                           Row(
                             children: [
-                              Text('Ratings: ',
-                                  style: GoogleFonts.poppins(
+                              Text(
+                                'Ratings: ',
+                                style: GoogleFonts.poppins(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 20),),
+                                    fontSize: 20),
+                              ),
                               Text(
-                                  '${snapshot.data['rating'].fold(0, (avg, ele) => avg + ele / snapshot.data['rating'].length)}(${snapshot.data['rating'].length})',style: GoogleFonts.poppins(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 22))
+                                  '${snapshot.data['rating'].fold(0, (avg, ele) => avg + ele / snapshot.data['rating'].length)}(${snapshot.data['rating'].length})',
+                                  style: GoogleFonts.poppins(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 22))
                             ],
                           )
                         ],
@@ -515,7 +607,27 @@ print(snapshot.data);
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: MaterialButton(onPressed: (){},child: Text('LOGOUT',style: GoogleFonts.poppins(fontWeight:FontWeight.bold,color:Colors.white)),color: Colors.red,),
+                  child: MaterialButton(
+                    onPressed: () async {
+//SharedPreferences sp=await SharedPreferences.getInstance();
+                      final SharedPreferences sharedPreferences =
+                          await SharedPreferences.getInstance();
+                      sharedPreferences.setBool('isUser', false);
+                      await sharedPreferences.remove('Account Details');
+                      Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (context) {
+                        return ChangeNotifierProvider(
+                            create: (BuildContext context) {
+                              return LoginRestro();
+                            },
+                            child: LoginScreen());
+                      }));
+                    },
+                    child: Text('LOGOUT',
+                        style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.bold, color: Colors.white)),
+                    color: Colors.red,
+                  ),
                 )
               ],
             );

@@ -67,9 +67,10 @@ class OrderBackend extends ChangeNotifier {
       print(res.body);
       return jsonDecode(res.body);
     }
+
     paycycleerror = res.body;
     notifyListeners();
-
+    EasyLoading.dismiss();
     return;
   }
 
@@ -104,7 +105,7 @@ class OrderBackend extends ChangeNotifier {
         'x-auth-token': token
       },
     );
-    if(res.statusCode==200){
+    if (res.statusCode == 200) {
       //print(res.body);
       EasyLoading.dismiss();
       return jsonDecode(res.body);
