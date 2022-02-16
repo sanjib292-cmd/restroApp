@@ -295,97 +295,249 @@ class _ProfileAppState extends State<ProfileApp> {
                       child: Column(
                         children: [
                           ExpansionTile(
-                            title: Text('Complete orders',
-                                style: GoogleFonts.poppins(
-                                    textStyle: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.green))),
-                            children: [
-                              ListView.builder(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount:
-                                      snapshot.data['completedOrders'].length,
-                                  itemBuilder: (con, index) {
-                                    print(
-                                        'Status: ${snapshot.data['completedOrders']}');
-                                    return Row(
+                                      //initiallyExpanded: true,
+                                      title: Text(
+                                        'Delivered orders',
+                                        style: GoogleFonts.poppins(
+                                            textStyle: TextStyle(
+                                                fontSize: 18.0,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.green)),
+                                      ),
                                       children: [
-                                        
-                                        Expanded(
-                                          // height: 150,
-                                          child: Card(
-                                              elevation: 5,
-                                              child: ListTile(
-                                                  title: Text(
-                                                    'Status: ${snapshot.data['completedOrders'][index]['orderStatus']}',
-                                                    style: GoogleFonts.poppins(
-                                                        color: Colors.green),
-                                                  ),
-                                                  subtitle: Column(
-                                                    children: [
-                                                      ListView.builder(
-                                                          //scrollDirection: Axis.vertical,
-                                                          physics:
-                                                              const NeverScrollableScrollPhysics(),
-                                                          shrinkWrap: true,
-                                                          itemCount: snapshot
-                                                              .data[
-                                                                  'completedOrders']
-                                                                  [index]
-                                                                  ['orderItems']
-                                                              .length,
-                                                          itemBuilder:
-                                                              (context, ind) {
-                                                            print(
-                                                                'index is $ind');
-                                                            return Container(
-                                                              height: 50,
-                                                              child: Card(
-                                                                child: Row(
+                                        Container(
+                                          //height: MediaQuery.of(context).size.height,
+                                          child: ListView.builder(
+                                              shrinkWrap: true,
+                                              reverse: true,
+                                              physics:
+                                                  NeverScrollableScrollPhysics(),
+                                              itemCount: snapshot
+                                                  .data['completedOrders']
+                                                  .length,
+                                              itemBuilder: (con, ind) {
+                                                if (snapshot
+                                                        .data['completedOrders']
+                                                        .length ==
+                                                    0) {
+                                                  return Text(
+                                                      'No past orders..');
+                                                }
+                                                //print(snp.data['activeOrders'][0]['shortOrderid']);
+                                                final List activeOrder =
+                                                    snapshot.data[
+                                                        'completedOrders'];
+                                                // activeOrder.sort((a, b) => dateFormat
+                                                //     .format(DateTime.parse(b['dateOrderd']))
+                                                //     .compareTo(dateFormat.format(
+                                                //         DateTime.parse(a['dateOrderd']))));
+                                                print(snapshot
+                                                    .data['completedOrders']);
+                                                return Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Container(
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height /
+                                                            5,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width /
+                                                            2,
+                                                    decoration: BoxDecoration(
+                                                      border:
+                                                          Border.all(width: 1),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                      //color: Colors.orange[100],
+                                                    ),
+                                                    child: Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        Expanded(
+                                                          child: Container(
+                                                              child: Column(
+                                                            children: [
+                                                              Row(
+                                                                children: [
+                                                                  Padding(
+                                                                    padding: const EdgeInsets
+                                                                            .only(
+                                                                        top:
+                                                                            4.0,
+                                                                        left:
+                                                                            4.0),
+                                                                    child:
+                                                                        Container(
+                                                                      height:
+                                                                          50,
+                                                                      width: 50,
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(6),
+                                                                        image: DecorationImage(
+                                                                            fit:
+                                                                                BoxFit.fill,
+                                                                            image: NetworkImage('${activeOrder[ind]['restroName']['imgurl']}')),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: 10,
+                                                                  ),
+                                                                  Column(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .start,
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
+                                                                    children: [
+                                                                      Row(
+                                                                        mainAxisAlignment:
+                                                                            MainAxisAlignment.spaceBetween,
+                                                                        children: [
+                                                                          Text(
+                                                                            '${activeOrder[ind]['restroName']['name']}',
+                                                                            style:
+                                                                                GoogleFonts.poppins(fontWeight: FontWeight.bold),
+                                                                          ),
+                                                                          SizedBox(
+                                                                            width:
+                                                                                50,
+                                                                          ),
+                                                                          Text(
+                                                                            '${activeOrder[ind]['shortOrderid']}',
+                                                                            style:
+                                                                                GoogleFonts.poppins(fontWeight: FontWeight.w500),
+                                                                          )
+                                                                        ],
+                                                                      ),
+                                                                      Text(
+                                                                        '${activeOrder[ind]['orderStatus']}',
+                                                                        style: GoogleFonts.poppins(
+                                                                            fontWeight:
+                                                                                FontWeight.w600,
+                                                                            color: Colors.green),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ],
+                                                              )
+                                                            ],
+                                                          )),
+                                                          //flex: 4,
+                                                        ),
+                                                        // Divider(thickness: 1,),
+                                                        Expanded(
+                                                            //flex: 5,
+                                                            child: Container(
+                                                          child: Column(
+                                                            children: [
+                                                              Expanded(
+                                                                child:
+                                                                    Container(
+                                                                  child: ListView.builder(
+                                                                      shrinkWrap: true,
+                                                                      physics: activeOrder[ind]['orderItems'].length > 1 ? null : NeverScrollableScrollPhysics(),
+                                                                      // scrollDirection:
+                                                                      //     Axis.vertical,
+                                                                      itemCount: activeOrder[ind]['orderItems'].length,
+                                                                      itemBuilder: (con, indx) {
+                                                                        return Padding(
+                                                                          padding:
+                                                                              EdgeInsets.all(4),
+                                                                          child:
+                                                                              Column(
+                                                                            children: [
+                                                                              Row(
+                                                                                children: [
+                                                                                  Container(
+                                                                                    height: 15,
+                                                                                    width: 15,
+                                                                                    decoration: BoxDecoration(image: DecorationImage(image: AssetImage(activeOrder[ind]['orderItems'][indx]['item']['isveg'] ? 'images/veg.png' : 'images/non-veg.png'))),
+                                                                                  ),
+                                                                                  SizedBox(
+                                                                                    width: 5,
+                                                                                  ),
+                                                                                  Text(
+                                                                                    '${activeOrder[ind]['orderItems'][indx]['quantity'].toString()}x ',
+                                                                                    style: GoogleFonts.poppins(),
+                                                                                    textAlign: TextAlign.start,
+                                                                                  ),
+                                                                                  Text(
+                                                                                    '${activeOrder[ind]['orderItems'][indx]['item']['itemName']}',
+                                                                                    style: GoogleFonts.poppins(),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        );
+                                                                      }),
+                                                                ),
+                                                              ),
+                                                              Divider(
+                                                                thickness: 0.5,
+                                                              ),
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .only(
+                                                                        left:
+                                                                            6.0,
+                                                                        right:
+                                                                            6.0),
+                                                                child: Column(
                                                                   children: [
-                                                                    Text(
-                                                                        snapshot
-                                                                            .data['completedOrders'][index]['orderItems'][ind]['item'][
-                                                                                'itemName']
-                                                                            .toString(),
-                                                                        style: GoogleFonts
-                                                                            .poppins())
+                                                                    Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceBetween,
+                                                                      children: [
+                                                                        Text(
+                                                                          '${dateFormat.format(DateTime.parse(activeOrder[ind]['dateOrderd']).toLocal())}',
+                                                                          style: GoogleFonts.poppins(
+                                                                              fontSize: 12,
+                                                                              color: Colors.black.withOpacity(0.6)),
+                                                                        ),
+                                                                        // Row(
+                                                                        //   children: [
+                                                                        //      Text(
+                                                                        //             'Earn: ',
+                                                                        //             style: GoogleFonts.poppins(fontWeight: FontWeight.w600, color: Colors.green),
+                                                                        //           ),
+                                                                        //     SizedBox(
+                                                                        //       width: 5,
+                                                                        //     ),
+                                                                        //     Text(
+                                                                        //       '₹${activeOrder[ind]['delboyCharge']}',
+                                                                        //       style: GoogleFonts.poppins(fontWeight: FontWeight.w600, color: Colors.green),
+                                                                        //     ),
+                                                                        //   ],
+                                                                        // ),
+                                                                      ],
+                                                                    ),
                                                                   ],
                                                                 ),
                                                               ),
-                                                            );
-                                                          })
-                                                    ],
-                                                  )
-                                                  // // Text(snapshot.data['allOrders'][0]['orderItems'][0]['price'].toString()),
-
-                                                  //   subtitle: Row(
-                                                  //   children: [
-                                                  //     Column(
-                                                  //       children: [
-                                                  //         ListView.builder(
-
-                                                  //           itemCount:snapshot.data['allOrders'][0]['orderItems'].length ,
-                                                  //           itemBuilder: (con,ind){
-                                                  //             print('hlo');
-                                                  //             //print(snapshot.data['allOrders'][index]['orderItems'].length );
-                                                  //           return Card(child: Text(snapshot.data['allOrders'][0]['orderItems'][0]['item']['itemName']),);
-                                                  //         })
-                                                  //       ],
-
-                                                  //     ),
-                                                  //     Text(snapshot.data['allOrders']['orderStatus'])
-                                                  //   ],
-                                                  // ),),
-                                                  )),
+                                                            ],
+                                                          ),
+                                                        )),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                );
+                                              }),
                                         ),
                                       ],
-                                    );
-                                  })
-                            ],
-                          )
+                                    ),
                         ],
                       )),
                 ),
@@ -396,102 +548,227 @@ class _ProfileAppState extends State<ProfileApp> {
                       child: Column(
                         children: [
                           ExpansionTile(
-                            title: Text('Cancled orders',
-                                style: GoogleFonts.poppins(
-                                    textStyle: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.red))),
-                            children: [
-                              ListView.builder(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount:
-                                      snapshot.data['canceledOrder'].length,
-                                  itemBuilder: (con, index) {
-                                    //List numbers=[];
-
-                                    print(
-                                        'Status: ${snapshot.data['canceledOrder'][0]['orderStatus']}');
-                                    return Expanded(
-                                      // height: 150,
-                                      child: Card(
-                                          elevation: 5,
-                                          child: ListTile(
-                                              title: Text(
-                                                'Status: ${snapshot.data['canceledOrder'][index]['orderStatus']}',
-                                                style: GoogleFonts.poppins(
-                                                    color: Colors.red),
-                                              ),
-                                              subtitle: Column(
-                                                children: [
-                                                  ListView.builder(
-                                                      //scrollDirection: Axis.vertical,
-                                                      physics:
-                                                          const NeverScrollableScrollPhysics(),
-                                                      shrinkWrap: true,
-                                                      itemCount: snapshot
-                                                          .data['canceledOrder']
-                                                              [index]
-                                                              ['orderItems']
-                                                          .length,
-                                                      itemBuilder:
-                                                          (context, ind) {
-                                                        print('index is $ind');
-                                                        return Container(
-                                                          height: 50,
-                                                          child: Card(
-                                                            child: Row(
-                                                              children: [
-                                                                Text(
-                                                                    snapshot
-                                                                        .data[
-                                                                            'canceledOrder']
-                                                                            [
-                                                                            index]
-                                                                            [
-                                                                            'orderItems']
-                                                                            [
-                                                                            ind]
-                                                                            [
-                                                                            'item']
-                                                                            [
-                                                                            'itemName']
-                                                                        .toString(),
-                                                                    style: GoogleFonts
-                                                                        .poppins())
-                                                              ],
-                                                            ),
+                                      //initiallyExpanded: true,
+                                      title: Text(
+                                        'Canceled orders',
+                                        style: GoogleFonts.poppins(
+                                            textStyle: TextStyle(
+                                                fontSize: 18.0,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.red)),
+                                      ),
+                                      children: [
+                                        Container(
+                                          //height: MediaQuery.of(context).size.height,
+                                          child: ListView.builder(
+                                              shrinkWrap: true,
+                                              reverse: true,
+                                              physics:
+                                                  NeverScrollableScrollPhysics(),
+                                              itemCount: snapshot
+                                                  .data['canceledOrder'].length,
+                                              itemBuilder: (con, ind) {
+                                                if (snapshot
+                                                        .data['canceledOrder']
+                                                        .length ==
+                                                    0) {
+                                                  return Text(
+                                                      'No past orders..');
+                                                }
+                                                final List activeOrder =
+                                                    snapshot
+                                                        .data['canceledOrder'];
+                                                return Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Container(
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height /
+                                                            5,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width /
+                                                            2,
+                                                    decoration: BoxDecoration(
+                                                      border:
+                                                          Border.all(width: 1),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                      //color: Colors.orange[100],
+                                                    ),
+                                                    child: Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        Expanded(
+                                                          child: Container(
+                                                              child: Column(
+                                                            children: [
+                                                              Row(
+                                                                children: [
+                                                                  Padding(
+                                                                    padding: const EdgeInsets
+                                                                            .only(
+                                                                        top:
+                                                                            4.0,
+                                                                        left:
+                                                                            4.0),
+                                                                    child:
+                                                                        Container(
+                                                                      height:
+                                                                          50,
+                                                                      width: 50,
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(6),
+                                                                        image: DecorationImage(
+                                                                            fit:
+                                                                                BoxFit.fill,
+                                                                            image: NetworkImage('${activeOrder[ind]['restroName']['imgurl']}')),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: 10,
+                                                                  ),
+                                                                  Column(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .start,
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
+                                                                    children: [
+                                                                      Row(
+                                                                        mainAxisAlignment:
+                                                                            MainAxisAlignment.spaceBetween,
+                                                                        children: [
+                                                                          Text(
+                                                                            '${activeOrder[ind]['restroName']['name']}',
+                                                                            style:
+                                                                                GoogleFonts.poppins(fontWeight: FontWeight.bold),
+                                                                          ),
+                                                                          SizedBox(
+                                                                            width:
+                                                                                50,
+                                                                          ),
+                                                                          Text(
+                                                                            '${activeOrder[ind]['shortOrderid']}',
+                                                                            style:
+                                                                                GoogleFonts.poppins(fontWeight: FontWeight.w500),
+                                                                          )
+                                                                        ],
+                                                                      ),
+                                                                      Text(
+                                                                        'Canceled',
+                                                                        style: GoogleFonts.poppins(
+                                                                            fontWeight:
+                                                                                FontWeight.w600,
+                                                                            color: Colors.red),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ],
+                                                              )
+                                                            ],
+                                                          )),
+                                                          //flex: 4,
+                                                        ),
+                                                        // Divider(thickness: 1,),
+                                                        Expanded(
+                                                            //flex: 5,
+                                                            child: Container(
+                                                          child: Column(
+                                                            children: [
+                                                              Expanded(
+                                                                child:
+                                                                    Container(
+                                                                  child: ListView.builder(
+                                                                      shrinkWrap: true,
+                                                                      physics: activeOrder[ind]['orderItems'].length > 1 ? null : NeverScrollableScrollPhysics(),
+                                                                      // scrollDirection:
+                                                                      //     Axis.vertical,
+                                                                      itemCount: activeOrder[ind]['orderItems'].length,
+                                                                      itemBuilder: (con, indx) {
+                                                                        return Padding(
+                                                                          padding:
+                                                                              EdgeInsets.all(4),
+                                                                          child:
+                                                                              Column(
+                                                                            children: [
+                                                                              Row(
+                                                                                children: [
+                                                                                  Container(
+                                                                                    height: 15,
+                                                                                    width: 15,
+                                                                                    decoration: BoxDecoration(image: DecorationImage(image: AssetImage(activeOrder[ind]['orderItems'][indx]['item']['isveg'] ? 'images/veg.png' : 'images/non-veg.png'))),
+                                                                                  ),
+                                                                                  SizedBox(
+                                                                                    width: 5,
+                                                                                  ),
+                                                                                  Text(
+                                                                                    '${activeOrder[ind]['orderItems'][indx]['quantity'].toString()}x ',
+                                                                                    style: GoogleFonts.poppins(),
+                                                                                    textAlign: TextAlign.start,
+                                                                                  ),
+                                                                                  Text(
+                                                                                    '${activeOrder[ind]['orderItems'][indx]['item']['itemName']}',
+                                                                                    style: GoogleFonts.poppins(),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        );
+                                                                      }),
+                                                                ),
+                                                              ),
+                                                              Divider(
+                                                                thickness: 0.5,
+                                                              ),
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .only(
+                                                                        left:
+                                                                            6.0,
+                                                                        right:
+                                                                            6.0),
+                                                                child: Column(
+                                                                  children: [
+                                                                    Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceBetween,
+                                                                      children: [
+                                                                        Text(
+                                                                          '${dateFormat.format(DateTime.parse(activeOrder[ind]['dateOrderd']).toLocal())}',
+                                                                          style: GoogleFonts.poppins(
+                                                                              fontSize: 12,
+                                                                              color: Colors.black.withOpacity(0.6)),
+                                                                        ),
+                                                                       
+                                                                      ],
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ],
                                                           ),
-                                                        );
-                                                      })
-                                                ],
-                                              )
-                                              // // Text(snapshot.data['allOrders'][0]['orderItems'][0]['price'].toString()),
-
-                                              //   subtitle: Row(
-                                              //   children: [
-                                              //     Column(
-                                              //       children: [
-                                              //         ListView.builder(
-
-                                              //           itemCount:snapshot.data['allOrders'][0]['orderItems'].length ,
-                                              //           itemBuilder: (con,ind){
-                                              //             print('hlo');
-                                              //             //print(snapshot.data['allOrders'][index]['orderItems'].length );
-                                              //           return Card(child: Text(snapshot.data['allOrders'][0]['orderItems'][0]['item']['itemName']),);
-                                              //         })
-                                              //       ],
-
-                                              //     ),
-                                              //     Text(snapshot.data['allOrders']['orderStatus'])
-                                              //   ],
-                                              // ),),
-                                              )),
-                                    );
-                                  })
-                            ],
-                          )
+                                                        )),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                );
+                                              }),
+                                        ),
+                                      ],
+                                    ),
                         ],
                       )),
                 ),
