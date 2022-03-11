@@ -10,8 +10,6 @@ import 'package:restro_app/screens/homepage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
-
-
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -32,7 +30,6 @@ class _LoginScreenState extends State<LoginScreen> {
   var phone;
   var password;
   bool _obsecure = true;
-
 
   void _toggle() {
     setState(() {
@@ -55,7 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
             height: 180,
             width: 180,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(6),
+                borderRadius: BorderRadius.circular(6),
                 image: DecorationImage(image: AssetImage('images/LOGO.png'))),
           ),
           Column(
@@ -132,11 +129,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   TextButton(
                     onPressed: () async {
-  
-    String? token = await _firebaseMessaging.getToken();
+                      String? token = await _firebaseMessaging.getToken();
 
- 
-                      await restroLogin.loginRestro(phone, password,token);
+                      await restroLogin.loginRestro(phone, password, token);
                       if (restroLogin.msg != null) {
                         final SharedPreferences sharedPreferences =
                             await SharedPreferences.getInstance();
@@ -144,16 +139,17 @@ class _LoginScreenState extends State<LoginScreen> {
                             'isUser', restroLogin.varifiedUser);
                         await sharedPreferences.setString(
                             'Account Details', restroLogin.userDetails);
-                          Navigator.pushReplacement(context,
-                              MaterialPageRoute(builder: (con) {
-                            return ChangeNotifierProvider(
-                              create: (BuildContext context) {
-                                return LoginRestro();
-                              },
-                              child: HomePage(userDetails: restroLogin.userDetails,),
-                            );
-                          }));
-                       
+                        Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (con) {
+                          return ChangeNotifierProvider(
+                            create: (BuildContext context) {
+                              return LoginRestro();
+                            },
+                            child: HomePage(
+                              userDetails: restroLogin.userDetails,
+                            ),
+                          );
+                        }));
                       } else {
                         return showDialog(
                             context: context,
@@ -183,12 +179,18 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
-                  TextButton(onPressed: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context){
-                      return ChangeNotifierProvider(create: (BuildContext context) { return LoginRestro(); },
-                      child: Forgotpass());
-                    }));
-                  }, child: Text('Forgot password?'))
+                  TextButton(
+                      onPressed: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return ChangeNotifierProvider(
+                              create: (BuildContext context) {
+                                return LoginRestro();
+                              },
+                              child: Forgotpass());
+                        }));
+                      },
+                      child: Text('Forgot password?'))
                 ],
               ),
             ],

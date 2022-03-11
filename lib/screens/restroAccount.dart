@@ -872,7 +872,7 @@ class _ProfileAppState extends State<ProfileApp> {
                                     fontSize: 20),
                               ),
                               Text(
-                                  '${snapshot.data['rating'].fold(0, (avg, ele) => avg + ele / snapshot.data['rating'].length)}(${snapshot.data['rating'].length})',
+                                  '${snapshot.data['rating'].fold(0, (avg, ele) => avg + ele / snapshot.data['rating'].length).toStringAsFixed(1)}(${snapshot.data['rating'].length})',
                                   style: GoogleFonts.poppins(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,

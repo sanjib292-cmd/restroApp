@@ -287,6 +287,6 @@ class _HomePageState extends State<HomePage> {
           icn,
           size: 20,
         ),
-        title: Text(txt));
+        label: txt);
   }
 }
