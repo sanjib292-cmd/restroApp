@@ -6,7 +6,7 @@ import 'package:path/path.dart';
 import 'package:async/async.dart';
 import 'package:http/http.dart' as http;
 
-class AddnEditMenu extends ChangeNotifier {
+class AddnEditMenu extends ChangeNotifier { 
   var sucessMsg;
   var errorMsg;
   var itminstocSucess;
@@ -17,9 +17,10 @@ class AddnEditMenu extends ChangeNotifier {
   Future editItms(
       itmnam, price, itmdetails, typid, itmid, restroId, token) async {
     try {
+
       var url = Uri.parse("$firsturl/product/$typid/$itmid/$restroId");
       EasyLoading.show(status: 'loading...');
-      var res = await http.put(url,
+      var res = await http.put(url, 
           headers: <String, String>{
             HttpHeaders.contentTypeHeader: 'application/json',
             'x-auth-token': token
