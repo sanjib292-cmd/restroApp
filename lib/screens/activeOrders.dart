@@ -232,15 +232,8 @@ class _ActiveOrdersState extends State<ActiveOrders>
                                                                         ),
                                                                       )
                                                                     : Container(),
-                                                                OutlineButton(
-                                                                  borderSide:
-                                                                      BorderSide(
-                                                                    width: 4.0,
-                                                                    color: Colors
-                                                                        .orange,
-                                                                    style: BorderStyle
-                                                                        .solid,
-                                                                  ),
+                                                                TextButton(
+                                                                  
                                                                   onPressed:
                                                                       () {},
                                                                   child:

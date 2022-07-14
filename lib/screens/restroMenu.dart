@@ -1,3 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -73,109 +75,165 @@ class _RestroMenuState extends State<RestroMenu> {
                                             // Text(
                                             //       "snap.data[index]['restro'][0]['items'][indx]['itemName']")
                                             return Card(
-                                              child: ListTile(
-                                                subtitle: Row(
-                                                  children: [
-                                                    Text('₹',
-                                                        style: TextStyle(
-                                                            fontSize: 16,
-                                                            color:
-                                                                Colors.green)),
-                                                    Text(
-                                                      snap.data[index]['restro']
-                                                              [0]['items'][indx]
-                                                              ['price']
-                                                          .toString(),
-                                                      style:
-                                                          GoogleFonts.poppins(
-                                                              fontSize: 16),
-                                                    ),
-                                                    Switch(
-                                                        value: snap.data[index]
-                                                                    ['restro']
-                                                                [0]['items']
-                                                            [indx]['inStock'],
-                                                        onChanged:
-                                                            (bool val) async {
-                                                          final SharedPreferences
-                                                              sharedPreferences =
-                                                              await SharedPreferences
-                                                                  .getInstance();
-
-                                                          await addnEditMenu.editInStock(
-                                                              snap.data[index]
-                                                                  ['_id'],
-                                                              snap.data[index]
-                                                                          ['restro']
-                                                                      [0]['items']
-                                                                  [indx]['_id'],
-                                                              snap.data[index]
-                                                                          ['restro'][0]
-                                                                      ['items'][indx]
-                                                                  ['restroId'],
-                                                              sharedPreferences
-                                                                  .getString(
-                                                                      'Account Details'),
-                                                              val);
-                                                          setState(() {
-                                                            snap.data[index]['restro']
-                                                                            [0][
-                                                                        'items']
-                                                                    [indx][
-                                                                'inStock'] = val;
-                                                          });
-                                                        }),
-                                                    IconButton(
-                                                        onPressed: () {
-                                                          Navigator.push(
-                                                              context,
-                                                              MaterialPageRoute(
-                                                                  builder:
-                                                                      (context) {
-                                                            return ChangeNotifierProvider(
-                                                              create:
-                                                                  (BuildContext
-                                                                      context) {
-                                                                return AddnEditMenu();
-                                                              },
-                                                              child: EditMenu(
-                                                                itmDetails: snap
-                                                                            .data[index]
+                                                child: ListTile(
+                                                    subtitle: Row(
+                                                      children: [
+                                                        Text('₹',
+                                                            style: TextStyle(
+                                                                fontSize: 16,
+                                                                color: Colors
+                                                                    .green)),
+                                                        Text(
+                                                          snap.data[index]
+                                                                  ['restro'][0]
+                                                                  ['items']
+                                                                  [indx]
+                                                                  ['price']
+                                                              .toString(),
+                                                          style: GoogleFonts
+                                                              .poppins(
+                                                                  fontSize: 16),
+                                                        ),
+                                                        Switch(
+                                                            value: snap.data[
+                                                                            index]
                                                                         [
                                                                         'restro'][0]
                                                                     [
-                                                                    'items'][indx],
-                                                                typId: snap.data[
-                                                                        index]
-                                                                    ['_id'],
-                                                              ),
-                                                            );
-                                                          }));
-                                                        },
-                                                        icon: FaIcon(
-                                                            FontAwesomeIcons
-                                                                .pencilAlt,
-                                                            size: 20))
-                                                  ],
-                                                ),
-                                                title: Text(
-                                                  snap.data[index]['restro'][0]
-                                                          ['items'][indx]
-                                                      ['itemName'],
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w700),
-                                                ),
-                                                trailing: CircleAvatar(
-                                                    radius: 60,
-                                                    backgroundImage:
-                                                        NetworkImage(
+                                                                    'items'][indx]
+                                                                ['inStock'],
+                                                            onChanged: (bool
+                                                                val) async {
+                                                              final SharedPreferences
+                                                                  sharedPreferences =
+                                                                  await SharedPreferences
+                                                                      .getInstance();
+
+                                                              await addnEditMenu.editInStock(
+                                                                  snap.data[index]
+                                                                      ['_id'],
+                                                                  snap.data[index]['restro'][0]
+                                                                              ['items']
+                                                                          [indx]
+                                                                      ['_id'],
+                                                                  snap.data[index]
+                                                                              ['restro'][0]
+                                                                          ['items'][indx]
+                                                                      [
+                                                                      'restroId'],
+                                                                  sharedPreferences
+                                                                      .getString(
+                                                                          'Account Details'),
+                                                                  val);
+                                                              setState(() {
+                                                                snap.data[index]
+                                                                            [
+                                                                            'restro'][0]
+                                                                        [
+                                                                        'items'][indx]
+                                                                    [
+                                                                    'inStock'] = val;
+                                                              });
+                                                            }),
+                                                        IconButton(
+                                                            onPressed: () {
+                                                              Navigator.push(
+                                                                  context,
+                                                                  MaterialPageRoute(
+                                                                      builder:
+                                                                          (context) {
+                                                                return ChangeNotifierProvider(
+                                                                  create: (BuildContext
+                                                                      context) {
+                                                                    return AddnEditMenu();
+                                                                  },
+                                                                  child:
+                                                                      EditMenu(
+                                                                    itmDetails: snap.data[index]
+                                                                            [
+                                                                            'restro'][0]
+                                                                        [
+                                                                        'items'][indx],
+                                                                    typId: snap.data[
+                                                                            index]
+                                                                        ['_id'],
+                                                                  ),
+                                                                );
+                                                              }));
+                                                            },
+                                                            icon: FaIcon(
+                                                                FontAwesomeIcons
+                                                                    .pencilAlt,
+                                                                size: 20))
+                                                      ],
+                                                    ),
+                                                    title: Text(
                                                       snap.data[index]['restro']
                                                               [0]['items'][indx]
-                                                          ['itmImg'],
-                                                    )),
-                                              ),
-                                            );
+                                                          ['itemName'],
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w700),
+                                                    ),
+                                                    trailing: Container(
+                                                      height: 80,
+                                                      width: 80,
+                                                      decoration: BoxDecoration(
+                                                          shape:
+                                                              BoxShape.circle),
+                                                      child: CachedNetworkImage(
+                                                          fit: BoxFit.cover,
+                                                          imageBuilder: (context,
+                                                                  imageProvider) =>
+                                                              Container(
+                                                                width: 120.0,
+                                                                height: 120.0,
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  shape: BoxShape
+                                                                      .circle,
+                                                                  image: DecorationImage(
+                                                                      image:
+                                                                          imageProvider,
+                                                                      fit: BoxFit
+                                                                          .cover),
+                                                                ),
+                                                              ),
+                                                          imageUrl:
+                                                              '${snap.data[index]['restro'][0]['items'][indx]['itmImg']}',
+                                                          placeholder: (context,
+                                                                  url) =>
+                                                              Container(
+                                                                  height: 40,
+                                                                  width: 40,
+                                                                  child:
+                                                                      CupertinoActivityIndicator(
+                                                                    color: Colors
+                                                                        .purple,
+                                                                  )),
+                                                          errorWidget: (context,
+                                                                  url, error) =>
+                                                              Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                              .all(
+                                                                          8.0),
+                                                                  child:
+                                                                      Container(
+                                                                    height: 30,
+                                                                    width: 30,
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      shape: BoxShape
+                                                                          .circle,
+                                                                      image: DecorationImage(
+                                                                          image: AssetImage(
+                                                                              'asset/images/LOGO.png'),
+                                                                          fit: BoxFit
+                                                                              .contain),
+                                                                    ),
+                                                                  ))),
+                                                    )));
                                           })
                                     ],
                                     title: Text(snap.data[index]['cusineType'],

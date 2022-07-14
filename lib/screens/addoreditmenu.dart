@@ -39,7 +39,7 @@ class _AddorEditMenuState extends State<AddorEditMenu> {
   }
 
   var itemName, isveg, file, price, inStock, foodtype, category;
-  String itmDetails='';
+  String itmDetails = '';
 
   var cusineTyp;
   bool itmVeg = false;
@@ -180,6 +180,8 @@ class _AddorEditMenuState extends State<AddorEditMenu> {
                                           "North Indian",
                                           "South India",
                                           "Sweets",
+                                          "Roast",
+                                          "BBQ",
                                           "Naga",
                                           "Assamess",
                                           "Contiental",
@@ -230,7 +232,10 @@ class _AddorEditMenuState extends State<AddorEditMenu> {
                                   )
                                 ],
                               ),
-                              Text('Item is non-veg tick the box to change to veg',style: GoogleFonts.poppins(),)
+                              Text(
+                                'Item is non-veg tick the box to change to veg',
+                                style: GoogleFonts.poppins(),
+                              )
                             ],
                           )
                         ],
@@ -260,67 +265,76 @@ class _AddorEditMenuState extends State<AddorEditMenu> {
                             EasyLoading.dismiss();
                             return;
                           } else {
-                          final snap= await task!
-                          .whenComplete(() {} );
-                          final url= await snap.ref.getDownloadURL();
-                          EasyLoading.dismiss();
-                          // if(url==null){
-                          //   print('null');
-                          // }
-                          print(url);
+                            final snap = await task!
+                                .whenComplete(() {})
+                                .catchError((er) {
+                              showDialog(
+                                  context: context,
+                                  builder: (con) {
+                                    return CustomDialogBox(
+                                      title: "Reuired field can't be null",
+                                      descriptions: "$er",
+                                    );
+                                  });
+                            });
+                            final url = await snap.ref.getDownloadURL();
+                            EasyLoading.dismiss();
+                            // if(url==null){
+                            //   print('null');
+                            // }
+                            print(url);
                             //.then((value) async {
-                                try {
-                                  if (itemName == null ||
-                                      url == null ||
-                                      price == null ||
-                                      cusineTyp == null ||
-                                      category == null) {
-                                    showDialog(
-                                        context: context,
-                                        builder: (con) {
-                                          return CustomDialogBox(
-                                            title:
-                                                "Reuired field can't be null",
-                                            descriptions:
-                                                "Recheck form and submit..",
-                                          );
-                                        });
-                                  } else {
-                                    await addnEditMenu.addItems(
-                                        widget.token,
-                                        payload['id'].toString(),
-                                        itemName,
-                                        itmVeg,
-                                        url,
-                                        price,
-                                        cusineTyp,
-                                        itmDetails,
-                                        category);
-                                    //if (addnEditMenu.sucessMsg != null) {
+                            try {
+                              if (itemName == null ||
+                                  url == null ||
+                                  price == null ||
+                                  cusineTyp == null ||
+                                  category == null) {
+                                showDialog(
+                                    context: context,
+                                    builder: (con) {
+                                      return CustomDialogBox(
+                                        title: "Reuired field can't be null",
+                                        descriptions:
+                                            "Recheck form and submit..",
+                                      );
+                                    });
+                              } else {
+                                await addnEditMenu.addItems(
+                                    widget.token,
+                                    payload['id'].toString(),
+                                    itemName,
+                                    itmVeg,
+                                    url,
+                                    price,
+                                    cusineTyp,
+                                    itmDetails,
+                                    category);
+                                //if (addnEditMenu.sucessMsg != null) {
 
-                                    try {
-                                      return showDialog(
-                                          context: context,
-                                          builder: (context) {
-                                            return AlertDialog(
-                                              title: Text(addnEditMenu
-                                                      .uploadedSucess ??
-                                                  addnEditMenu.uploadedFail),
-                                            );
-                                          });
-                                    } on Exception catch (e) {
-                                      print(e);
-                                    }
-                                  }
-                                } catch (e) {
-                                  showDialog(
+                                try {
+                                  return showDialog(
                                       context: context,
-                                      builder: (con) {
+                                      builder: (context) {
                                         return AlertDialog(
-                                            title: Text(e.toString()));
+                                          title: Text(
+                                              addnEditMenu.uploadedSucess ??
+                                                  addnEditMenu.uploadedFail),
+                                        );
                                       });
+                                } on Exception catch (e) {
+                                  print(e);
                                 }
-                             // });
+                              }
+                            } catch (e) {
+                              showDialog(
+                                  context: context,
+                                  builder: (con) {
+                                    return AlertDialog(
+                                        title: Text(e.toString()));
+                                  });
+                            }
+                            // });
                             //});
                           }
                         }
